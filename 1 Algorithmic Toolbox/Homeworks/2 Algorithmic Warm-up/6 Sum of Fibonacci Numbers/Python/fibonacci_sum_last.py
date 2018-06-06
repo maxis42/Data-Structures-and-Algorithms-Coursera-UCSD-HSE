@@ -1,6 +1,7 @@
 # Uses python3
 import sys
 
+
 def get_remainders(n, m):
     if n <= 1:
         return n, n
@@ -32,5 +33,5 @@ def get_fibonacci_sum_last_digit(n):
 
 
 if __name__ == '__main__':
-    n = int(sys.stdin.read());
+    n = int(sys.stdin.read())
     print(get_fibonacci_sum_last_digit(n))

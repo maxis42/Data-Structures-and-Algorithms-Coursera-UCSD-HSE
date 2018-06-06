@@ -1,6 +1,7 @@
 # Uses python3
 import sys
 
+
 def get_remainders(n, m):
     if n <= 1:
         return n, n
@@ -30,6 +31,7 @@ def get_fibonacci_sum_last_digit(n):
 
     return (remainders_period_sum * (n // period) + remainder_sum) % 10
 
+
 def get_fibonacci_part_sum_last_digit(m, n):
     a = get_fibonacci_sum_last_digit(n)
     b = get_fibonacci_sum_last_digit(m - 1)
@@ -39,8 +41,7 @@ def get_fibonacci_part_sum_last_digit(m, n):
         return 10 - (b - a)
 
 
-
 if __name__ == '__main__':
-    input_new = sys.stdin.read();
+    input_new = sys.stdin.read()
     m, n = map(int, input_new.split())
     print(get_fibonacci_part_sum_last_digit(m, n))
