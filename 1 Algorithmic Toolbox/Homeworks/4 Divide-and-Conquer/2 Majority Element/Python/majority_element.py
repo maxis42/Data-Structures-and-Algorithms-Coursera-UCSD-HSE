@@ -65,6 +65,33 @@ def get_majority_element(a, left, right):
     return -1
 
 
+# divide-and-conqurer algorithm
+# n*log(n) complexity
+# T(n) = 2*T(n/2) + Teta(n)
+def get_majority_element_divandconq(a, left, right):
+    # last tree level
+    if (right - left) == 1:
+        return a[left]
+    else:
+        # split point
+        mid = (left + right) // 2
+
+        left_maj_elem = get_majority_element(a, left, mid)
+        right_maj_elem = get_majority_element(a, mid+1, right)
+
+        # define whether there is a majority element for the part of the array
+        # majority elements, exclude -1
+        maj_elems = (a for a in (left_maj_elem, right_maj_elem) if a != -1)
+        for maj_elem in maj_elems:
+            cnt = 0
+            for i in range(left, right):
+                if a[i] == maj_elem:
+                    cnt += 1
+            if cnt > (right - left) / 2:
+                return maj_elem
+    return -1
+
+
 def stress_test():
     flag_correct = True
     i = 0
@@ -76,7 +103,7 @@ def stress_test():
         print(i, a, N)
 
         alg_naive = get_majority_element_naive(a, 0, N)
-        alg_fast = get_majority_element(a, 0, N)
+        alg_fast = get_majority_element_divandconq(a, 0, N)
 
         if alg_naive != alg_fast:
             print('Naive algorithm:', alg_naive)
@@ -91,7 +118,7 @@ if __name__ == '__main__':
 
     input = sys.stdin.read()
     n, *a = list(map(int, input.split()))
-    if get_majority_element(a, 0, n) != -1:
+    if get_majority_element_divandconq(a, 0, n) != -1:
         print(1)
     else:
         print(0)
