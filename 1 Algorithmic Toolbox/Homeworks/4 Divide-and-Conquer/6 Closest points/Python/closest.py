@@ -5,30 +5,32 @@ from math import sqrt
 
 def min_dist_sort(x, y):
     points = list(zip(x, y))
-    points_x = sorted(points, key=lambda x: x)
-    points_y = sorted(points, key=lambda y: x[1])
-    return sqrt(minimum_distance(points_x, points_y))
+    points = sorted(points, key=lambda x: x[0])
+    return sqrt(minimum_distance(points))
 
 
-def minimum_distance(points_x, points_y):
-    if len(points_x) == 1:
-        return 10**18
+def minimum_distance(points):
+    N = len(points)
+    if N <= 3:
+        x, y = [list(t) for t in zip(*points)]
+        return minimum_distance_bruteforce_wo_sqrt(x, y)
 
-    mid = len(points_x) // 2
+    mid = N // 2
 
-    d1 = minimum_distance(points_x[:mid], points_y)
-    d2 = minimum_distance(points_x[mid:], points_y)
+    d1 = minimum_distance(points[:mid])
+    d2 = minimum_distance(points[mid:])
     d12 = min(d1, d2)
 
-    points_mid_y = [p for p in points_y if p in points_x and abs(points_x[mid][0] - p[0]) < d12]
-    dmid = check_middle_line(points_mid_y)
+    points_mid = [p for p in points if abs(points[mid][0] - p[0]) < d12]
+    d = check_middle_line(points_mid, d12)
 
-    return min(d12, dmid)
+    return d
 
 
-def check_middle_line(points):
-    min_dist = 10**18
+def check_middle_line(points, d):
+    min_dist = d
     N = len(points)
+    points = sorted(points, key=lambda x: x[1])
     for i in range(N-1):
         p1 = points[i]
         for j in range(i+1, min(i+9, N)):
@@ -40,7 +42,7 @@ def check_middle_line(points):
     return min_dist
 
 
-def minimum_distance_naive(x, y):
+def minimum_distance_bruteforce_wo_sqrt(x, y):
     points = list(zip(x, y))
 
     min_dist = 10**18
@@ -49,7 +51,7 @@ def minimum_distance_naive(x, y):
         p1 = points[i]
         for j in range(i+1, len(points)):
             p2 = points[j]
-            dist = sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+            dist = (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
 
             if dist < min_dist:
                 min_dist = dist
