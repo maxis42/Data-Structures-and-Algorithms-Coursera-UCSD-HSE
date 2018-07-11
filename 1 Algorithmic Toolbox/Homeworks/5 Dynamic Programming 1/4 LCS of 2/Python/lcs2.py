@@ -10,6 +10,9 @@ def distance_matrix(A, B):
     # array of distances (n+1 x m+1)
     D = [[0] * (m+1) for i in range(n+1)]
 
+    # array of directions
+    directions = [[''] * m for i in range(n)]
+
     # initialize zero row and column
     for i in range(n+1):
         D[i][0] = i
@@ -24,39 +27,41 @@ def distance_matrix(A, B):
             deletion = D[i-1][j] + 1
             # letters match
             match = D[i-1][j-1]
-            # letters mismatch
-            mismatch = D[i-1][j-1] + 1
 
             # check whether there is a match
             if A[i-1] == B[j-1]:
-                D[i][j] = min(insertion, deletion, match)
+                directions[i-1][j-1] = 'ADDXY'
+                D[i][j] = match
             else:
-                D[i][j] = min(insertion, deletion, mismatch)
+                if insertion < deletion:
+                    D[i][j] = insertion
+                    directions[i-1][j-1] = 'INS'
+                else:
+                    D[i][j] = deletion
+                    directions[i-1][j-1] = 'DEL'
 
-    return D
+    return D, directions
 
 
 def lcs2(a, b):
-    D = distance_matrix(a, b)
-    return output_alignment(len(a), len(b), D)
+    D, directions = distance_matrix(a, b)
+    return output_alignment(directions)
 
 
-def output_alignment(i, j, D):
-    if i == 0 and j == 0:
-        return 0
-
-    # deletion
-    if i > 0 and D[i][j] == D[i-1][j] + 1:
-        n = output_alignment(i-1, j, D)
-    # insertion
-    elif j > 0 and D[i][j] == D[i][j-1] + 1:
-        n = output_alignment(i, j-1, D)
-    # match/mismatch
-    else:
-        n = output_alignment(i-1, j-1, D)
-        if D[i][j] == D[i-1][j-1]:
-            n += 1
-    return n
+def output_alignment(directions):
+    i = len(directions)
+    j = len(directions[0])
+    cnt = 0
+    while i != 0 and j != 0:
+        if directions[i-1][j-1] == 'ADDXY':
+            i -= 1
+            j -= 1
+            cnt += 1
+        elif directions[i-1][j-1] == 'INS':
+            j -= 1
+        elif directions[i-1][j-1] == 'DEL':
+            i -= 1
+    return cnt
 
 
 if __name__ == '__main__':
