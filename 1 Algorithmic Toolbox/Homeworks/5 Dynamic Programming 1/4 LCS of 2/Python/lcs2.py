@@ -38,6 +38,9 @@ def distance_matrix(A, B):
                     D[i][j] = deletion
                     directions[i-1][j-1] = 'DEL'
 
+    for row in directions:
+        print(row)
+
     return directions
 
 
