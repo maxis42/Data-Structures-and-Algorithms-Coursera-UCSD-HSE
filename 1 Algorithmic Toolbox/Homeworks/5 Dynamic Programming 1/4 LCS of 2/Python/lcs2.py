@@ -21,18 +21,16 @@ def distance_matrix(A, B):
 
     for j in range(1, m+1):
         for i in range(1, n+1):
-            # space to the 1st word
-            insertion = D[i][j-1] + 1
-            # space to the 2nd word
-            deletion = D[i-1][j] + 1
-            # letters match
-            match = D[i-1][j-1]
-
             # check whether there is a match
             if A[i-1] == B[j-1]:
                 directions[i-1][j-1] = 'ADDXY'
-                D[i][j] = match
+                D[i][j] = D[i-1][j-1]
             else:
+                # space to the 1st word
+                insertion = D[i][j-1] + 1
+                # space to the 2nd word
+                deletion = D[i-1][j] + 1
+
                 if insertion < deletion:
                     D[i][j] = insertion
                     directions[i-1][j-1] = 'INS'
@@ -40,11 +38,11 @@ def distance_matrix(A, B):
                     D[i][j] = deletion
                     directions[i-1][j-1] = 'DEL'
 
-    return D, directions
+    return directions
 
 
 def lcs2(a, b):
-    D, directions = distance_matrix(a, b)
+    directions = distance_matrix(a, b)
     return output_alignment(directions)
 
 
