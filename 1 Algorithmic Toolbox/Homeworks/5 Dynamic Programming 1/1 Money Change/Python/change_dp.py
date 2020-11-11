@@ -26,6 +26,6 @@ def get_change(m):
 
 
 if __name__ == '__main__':
-    # m = int(sys.stdin.read())
-    m = 34
+    m = int(sys.stdin.read())
+    # m = 34
     print(get_change(m))

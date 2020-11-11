@@ -105,19 +105,19 @@ def lcs3(a, b, c):
 
 
 if __name__ == '__main__':
-    # input = sys.stdin.read()
-    # data = list(map(int, input.split()))
-    # an = data[0]
-    # data = data[1:]
-    # a = data[:an]
-    # data = data[an:]
-    # bn = data[0]
-    # data = data[1:]
-    # b = data[:bn]
-    # data = data[bn:]
-    # cn = data[0]
-    # data = data[1:]
-    # c = data[:cn]
+    input = sys.stdin.read()
+    data = list(map(int, input.split()))
+    an = data[0]
+    data = data[1:]
+    a = data[:an]
+    data = data[an:]
+    bn = data[0]
+    data = data[1:]
+    b = data[:bn]
+    data = data[bn:]
+    cn = data[0]
+    data = data[1:]
+    c = data[:cn]
 
     # a = [1, 2, 3]
     # b = [2, 1, 3]
@@ -126,9 +126,9 @@ if __name__ == '__main__':
     # a = [8, 3, 2, 1, 7]
     # b = [8, 2, 1, 3, 8, 10, 7]
     # c = [6, 8, 3, 1, 4, 7]
-
-    a = [1, 2]
-    b = [2, 1]
-    c = [1, 3]
+    #
+    # a = [1, 2]
+    # b = [2, 1]
+    # c = [1, 3]
 
     print(lcs3(a, b, c))
