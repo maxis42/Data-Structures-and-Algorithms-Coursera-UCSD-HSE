@@ -48,8 +48,13 @@ def distance_matrix(a, b):
                 D[i][j] = min_ins
                 directions[i-1][j-1] = ''.join(['INS', str(min_ind)])
 
-    # for row in directions:
-    #     print(row)
+            print(i, j)
+            for row in D:
+                print(row)
+            print()
+
+    for row in directions:
+        print(row)
 
     return directions
 
@@ -76,22 +81,25 @@ def lcs2(a, b):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    data = list(map(int, input.split()))
-
-    n = data[0]
-    data = data[1:]
-    a = data[:n]
-
-    data = data[n:]
-    m = data[0]
-    data = data[1:]
-    b = data[:m]
+    # input = sys.stdin.read()
+    # data = list(map(int, input.split()))
+    #
+    # n = data[0]
+    # data = data[1:]
+    # a = data[:n]
+    #
+    # data = data[n:]
+    # m = data[0]
+    # data = data[1:]
+    # b = data[:m]
 
     # a = [2, 7, 8, 3]
     # b = [5, 2, 8, 7]
 
     # a = [2, 7, 5]
     # b = [2, 5]
+
+    a = [1]
+    b = [1]
 
     print(lcs2(a, b))
