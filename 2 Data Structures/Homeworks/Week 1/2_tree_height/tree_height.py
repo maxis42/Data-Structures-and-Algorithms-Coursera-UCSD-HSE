@@ -1,31 +1,82 @@
 # python3
-
 import sys
 import threading
+from collections import deque
 
 
-def compute_height(n, parents):
-    # Replace this code with a faster implementation
-    max_height = 0
-    for vertex in range(n):
+class Node:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+
+    def add_child(self, child_index):
+        self.children.append(child_index)
+
+    def __str__(self):
+        children_names = [child.name for child in self.children]
+        return f"Node #{self.name} children: {children_names}"
+
+    def __repr__(self):
+        children_names = [child.name for child in self.children]
+        return f"Node #{self.name} children: {children_names}"
+
+
+class TreeHeight:
+    def __init__(self, parent):
+        self.parent = parent
+        self.n = len(self.parent)
+
+        if -1 not in self.parent:
+            raise ValueError("No root node!")
+
+        self.nodes = [Node(i) for i in range(self.n)]
+
+        # add children to the nodes
+        for child_index in range(self.n):
+            parent_index = self.parent[child_index]
+            if parent_index == -1:
+                self.root = child_index
+            else:
+                self.nodes[parent_index].add_child(self.nodes[child_index])
+
+    #         print(self.nodes)
+
+    def compute_height_naive(self):
+        """
+        For every node get its height. Then take the max height
+        between all nodes.
+        """
+        max_height = 0
+
+        for vertex in range(self.n):
+            height = 0
+            i = vertex
+            while i != -1:
+                height += 1
+                i = self.parent[i]
+            max_height = max(max_height, height)
+
+        return max_height
+
+    def compute_height(self):
+        d = deque()
+
+        d.append(self.nodes[self.root])
         height = 0
-        current = vertex
-        while current != -1:
+
+        while len(d):
             height += 1
-            current = parents[current]
-        max_height = max(max_height, height)
-    return max_height
+            for i in range(len(d)):
+                node = d.popleft()
+
+                for child in node.children:
+                    d.append(child)
+
+        return height
 
 
-def main():
+if __name__ == '__main__':
     n = int(input())
     parents = list(map(int, input().split()))
-    print(compute_height(n, parents))
-
-
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
-threading.Thread(target=main).start()
+    tree = TreeHeight(parents)
+    print(tree.compute_height())
