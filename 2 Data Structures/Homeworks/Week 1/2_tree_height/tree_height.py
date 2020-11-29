@@ -59,6 +59,10 @@ class TreeHeight:
         return max_height
 
     def compute_height(self):
+        """
+        Compute tree height with breadth-first search. Use deque to store
+        current level nodes.
+        """
         d = deque()
 
         d.append(self.nodes[self.root])
