@@ -31,14 +31,11 @@ def is_balanced(text):
 
 
 def find_mismatch(text):
-    match = False
-
     opening_brackets_stack = []
 
     for i, char_next in enumerate(text):
         # closing bracket
         if char_next in ")]}":
-            last_char = ""
             match_inner = True
 
             # find opening bracket
@@ -72,7 +69,6 @@ def find_mismatch(text):
     for j, char_next in enumerate(text_processed):
         # closing bracket
         if char_next in "([{":
-            last_char = ""
             match_inner = True
 
             # find opening bracket

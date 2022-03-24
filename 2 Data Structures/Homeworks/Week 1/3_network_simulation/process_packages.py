@@ -9,10 +9,9 @@ Response = namedtuple("Response", ["was_dropped", "started_at"])
 class Buffer:
     def __init__(self, size):
         self.size = size
-        self.finish_time = []
 
+        # contains the end times of requests
         self.__requests = deque(maxlen=size)
-        self.__moment = 0  # ms
 
     def process(self, request):
         while len(self.__requests) and self.__requests[0] <= request.arrived_at:

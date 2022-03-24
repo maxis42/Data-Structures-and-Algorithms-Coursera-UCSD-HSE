@@ -2,34 +2,37 @@
 from collections import deque
 
 
-def max_sliding_window_naive(sequence, m):
+def max_sliding_window_naive(arr, window):
     maximums = []
-    for i in range(len(sequence) - m + 1):
-        maximums.append(max(sequence[i:i + m]))
+    for i in range(len(arr) - window + 1):
+        maximums.append(max(arr[i:i + window]))
 
     return maximums
 
 
-def max_sliding_window_deque_naive(sequence, m):
-    d = deque(sequence[:m], maxlen=m)
+def max_sliding_window_deque_naive(arr, window):
+    d = deque(arr[:window], maxlen=window)
     maximums = []
-    for i in range(len(sequence) - m):
+    for i in range(len(arr) - window):
         maximums.append(max(d))
-        d.append(sequence[i + m])
+        d.append(arr[i + window])
     maximums.append(max(d))
 
     return maximums
 
 
-def max_sliding_window_deque(sequence, m):
-    d = deque(sequence[:m], maxlen=m)
+def max_sliding_window_deque(arr, window):
+    d = deque(arr[:window], maxlen=window)
 
     max_val = max(d)
     maximums = [max_val]
 
-    for i in range(len(sequence) - m):
-        next_elem = sequence[i + m]
+    for i in range(len(arr) - window):
+        next_elem = arr[i + window]
         if next_elem >= max_val:
+            # main idea:
+            # clear deque if the new element no less than the previous
+            # maximum element
             max_val = next_elem
             d.clear()
             d.append(next_elem)
@@ -41,31 +44,45 @@ def max_sliding_window_deque(sequence, m):
     return maximums
 
 
-def max_sliding_window_deque_idx(sequence, m):
+def max_sliding_window_deque_idx(arr, window):
+    # main idea:
+    # store in deque indices of maximum elements (not elements)
+    # example: arr = [2, 7, 3, 1, 5, 2, 6, 2], w = 4
+    # deque with indices:
+    # create the first window
+    # [0] -> [1] -> [1, 2] -> [1, 2, 3]
+    # iterate by elements
+    # [1, 2, 3] -> [1, 4] -> [4, 5] -> [6] -> [6, 7]
+    # maximums are the first deque elements on every step:
+    # indices [1, 1, 4, 6, 6]
+    # values  [7, 7, 5, 6, 6]
+
     d = deque()
 
     maximums = []
 
-    for i in range(m):
-        new_elem = sequence[i]
-        while (len(d) > 0) and (sequence[d[-1]] < new_elem):
+    for i in range(window):
+        new_elem = arr[i]
+        while (len(d) > 0) and (arr[d[-1]] < new_elem):
             d.pop()
         d.append(i)
 
-    for i in range(m, len(sequence)):
-        maximums.append(sequence[d[0]])
+    for i in range(window, len(arr)):
+        maximums.append(arr[d[0]])
 
-        new_elem = sequence[i]
+        new_elem = arr[i]
 
-        while (len(d) > 0) and (d[0] <= (i - m)):
+        # drop indices out of current window
+        while (len(d) > 0) and (d[0] <= (i - window)):
             d.popleft()
 
-        while (len(d) > 0) and (sequence[d[-1]] < new_elem):
+        # drop indices which elements are lower than the new element
+        while (len(d) > 0) and (arr[d[-1]] < new_elem):
             d.pop()
 
         d.append(i)
 
-    maximums.append(sequence[d[0]])
+    maximums.append(arr[d[0]])
 
     return maximums
 
