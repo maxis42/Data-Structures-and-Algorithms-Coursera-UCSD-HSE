@@ -36,14 +36,12 @@ def get_min_max(
         min_val = min(min_val, a, b, c, d)
         max_val = max(max_val, a, b, c, d)
 
-    return (min_val, max_val)
+    return min_val, max_val
 
 
 def get_maximum_value(expression: str) -> int:
     digits = [int(c) for i, c in enumerate(expression) if i % 2 == 0]
     operations = [c for i, c in enumerate(expression) if i % 2 != 0]
-    # print(f"Digits: {digits}")
-    # print(f"Operations: {operations}")
 
     n = len(digits)
 
@@ -54,18 +52,11 @@ def get_maximum_value(expression: str) -> int:
         min_vals[i, i] = digits[i]
         max_vals[i, i] = digits[i]
 
-    #     print(min_vals)
-    #     print(max_vals)
-
     for k in range(1, n):
         for i in range(n - k):
             j = k + i
-            #             print(f"i={i}; j={j}")
             min_vals[i, j], max_vals[i, j] = get_min_max(i, j, min_vals,
                                                          max_vals, operations)
-
-    # print(min_vals)
-    # print(max_vals)
 
     res = max_vals[0, n - 1]
     return res

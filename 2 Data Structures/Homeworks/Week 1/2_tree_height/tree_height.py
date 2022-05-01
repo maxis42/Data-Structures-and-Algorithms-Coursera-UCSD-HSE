@@ -1,6 +1,4 @@
 # python3
-import sys
-import threading
 from collections import deque
 
 

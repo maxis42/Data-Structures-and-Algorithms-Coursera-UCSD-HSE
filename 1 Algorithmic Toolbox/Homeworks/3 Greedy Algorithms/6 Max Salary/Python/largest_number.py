@@ -30,7 +30,7 @@ def circum_fill_str(s, length):
 
 def compare_by_position(item1, item2):
     """
-    If items lengths are not equal, circully fill smaller item
+    If items lengths are not equal, circularly fill smaller item
     Compare by first non-equal number on same position
 
     Input: item1, item2 - str
@@ -42,7 +42,7 @@ def compare_by_position(item1, item2):
     item_len1 = len(items[1])
     item_len = max(item_len0, item_len1)
 
-    # circully extend the smaller item
+    # circularly extend the smaller item
     if item_len0 != item_len1:
         if item_len0 < item_len:
             items[0] = circum_fill_str(items[0], item_len)
