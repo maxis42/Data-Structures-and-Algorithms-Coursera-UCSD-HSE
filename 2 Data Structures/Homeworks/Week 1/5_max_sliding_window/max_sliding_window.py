@@ -94,4 +94,3 @@ if __name__ == '__main__':
     window_size = int(input())
 
     print(*max_sliding_window_deque_idx(input_sequence, window_size))
-
