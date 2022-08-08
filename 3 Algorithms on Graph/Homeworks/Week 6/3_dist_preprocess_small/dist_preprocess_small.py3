@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys
-from typing import List, Dict
+from typing import List, Dict, Set, Tuple
 import heapq
 from copy import deepcopy
 from collections import namedtuple
@@ -9,136 +9,127 @@ from collections import namedtuple
 Test = namedtuple("Test", "n m edges queries")
 
 
-class Edge:
-    def __init__(self, start: int, end: int, weight: int):
-        self.start = start
-        self.end = end
-        self.weight = weight
-
-    def __str__(self):
-        return f"Edge(start={self.start}, end={self.end}, weight={self.weight})"
-
-    def __repr__(self):
-        return f"Edge(start={self.start}, end={self.end}, weight={self.weight})"
-
-    def same_edge(self, other):
-        res = (
-            (self.start == other.start)
-            and (self.end == other.end)
-        )
-        return res
-
-
 class Graph:
-    def __init__(self, vertices: List[int], num_edges: int, edges: List[Edge]):
+    def __init__(
+            self,
+            vertices: List[int],
+            edges: Dict[Tuple[int, int], int],
+            adj_list: Dict[int, Set[int]] = None,
+            adj_list_r: Dict[int, Set[int]] = None,
+            num_vertices: int = None,
+            max_vertex: int = None,
+    ):
         self.vertices = vertices
-        self.num_edges = num_edges
         self.edges = edges
 
-        self.adj_list, self.adj_list_r = self._get_adj_list(self.vertices, self.edges)
-        self.weights = {(edge.start, edge.end): edge.weight for edge in self.edges}
-        self.num_vertices = len(self.vertices)
+        self.adj_list, self.adj_list_r = adj_list, adj_list_r
+        if (adj_list is None) or (adj_list_r is None):
+            self.adj_list, self.adj_list_r = self._get_adj_list(self.vertices, self.edges)
 
-        self.max_vertex = max(self.vertices)
+        self.num_vertices = num_vertices
+        if self.num_vertices is None:
+            self.num_vertices = len(self.vertices)
+
+        self.max_vertex = max_vertex
+        if self.max_vertex is None:
+            self.max_vertex = max(self.vertices)
 
     @staticmethod
-    def _get_adj_list(vertices: List[int], edges: List[Edge])\
-            -> (Dict[int, List[Edge]], Dict[int, List[Edge]]):
-        adj_list = {i: [] for i in vertices}
-        adj_list_r = {i: [] for i in vertices}
-        for edge in edges:
-            adj_list[edge.start].append(edge)
-            adj_list_r[edge.end].append(Edge(edge.end, edge.start, edge.weight))
+    def _get_adj_list(vertices: List[int], edges: Dict[Tuple[int, int], int])\
+            -> (Dict[int, Set[int]], Dict[int, Set[int]]):
+        adj_list = dict()
+        adj_list_r = dict()
+
+        for i in vertices:
+            adj_list[i] = set()
+            adj_list_r[i] = set()
+
+        for start, end in edges:
+            adj_list[start].add(end)
+            adj_list_r[end].add(start)
         return adj_list, adj_list_r
 
     def reverse_graph(self):
-        edges_r = [Edge(edge.end, edge.start, edge.weight) for edge in self.edges]
-        graph_r = Graph(self.vertices, self.num_edges, edges_r)
+        edges_r = {(end, start): weight for (start, end), weight in self.edges.items()}
+        graph_r = Graph(
+            self.vertices,
+            edges_r,
+            self.adj_list_r,
+            self.adj_list,
+            self.num_vertices,
+            self.max_vertex,
+        )
         return graph_r
 
-    def add_edge(self, edge: Edge):
-        # print(f"Add edge inside: {edge.start, edge.end, edge.weight}")
-        if (edge.start, edge.end) not in self.weights:
-            self.edges.append(edge)
-            self.weights[(edge.start, edge.end)] = edge.weight
-            self.adj_list[edge.start].append(edge)
-            self.adj_list_r[edge.end].append(Edge(edge.end, edge.start, edge.weight))
-            self.num_edges += 1
+    def add_edge(self, start, end, weight):
+        if (start, end) not in self.edges:
+            self.edges[(start, end)] = weight
+            self.adj_list[start].add(end)
+            self.adj_list_r[end].add(start)
         else:
-            cur_weight = self.weights[(edge.start, edge.end)]
-            if edge.weight < cur_weight:
-                self.weights[(edge.start, edge.end)] = edge.weight
-                self.edges = [e for e in self.edges if not e.same_edge(edge)]
-                self.edges.append(edge)
-                self.adj_list, self.adj_list_r = self._get_adj_list(self.vertices, self.edges)
+            self.edges[(start, end)] = min(self.edges[(start, end)], weight)
 
-    def contract_node(self, node: int):
-        self.edges = [edge for edge in self.edges
-                      if (edge.start != node) and (edge.end != node)]
-        self.weights = {(edge.start, edge.end): edge.weight for edge in self.edges}
-        self.num_edges = len(self.edges)
-
-        self.vertices.remove(node)
+    def contract_vertex(self, vertex: int):
+        self.vertices.remove(vertex)
         self.num_vertices -= 1
 
-        self.adj_list, self.adj_list_r = self._get_adj_list(self.vertices, self.edges)
+        for v in self.adj_list[vertex]:
+            self.adj_list_r[v].remove(vertex)
+            del self.edges[(vertex, v)]
 
-    def get_predecessors(self, node: int) -> List[int]:
-        predecessors = []
-        for edge in self.adj_list_r[node]:
-            predecessors.append(edge.end)
-        return predecessors
+        for v in self.adj_list_r[vertex]:
+            self.adj_list[v].remove(vertex)
+            del self.edges[(v, vertex)]
 
-    def get_successors(self, node: int) -> List[int]:
-        successors = []
-        for edge in self.adj_list[node]:
-            successors.append(edge.end)
-        return successors
+        del self.adj_list[vertex]
+        del self.adj_list_r[vertex]
+
+    def get_predecessors(self, vertex: int) -> Set[int]:
+        return self.adj_list_r[vertex]
+
+    def get_successors(self, vertex: int) -> Set[int]:
+        return self.adj_list[vertex]
 
 
 class ContractionHierarchies:
     _inf = 10**9
 
     def __init__(self, graph: Graph):
-        self.graph = graph
+        self._dist = [self._inf for _ in range(graph.num_vertices)]
+        self._final = [False for _ in range(graph.num_vertices)]
+        self._hops = [0 for _ in range(graph.num_vertices)]
 
-        self.graph_r = self.graph.reverse_graph()
-        self.graph_aug, self.node_order = self._preprocess()
-
+        self.graph_aug, self.node_order = self._preprocess(graph)
         self.graph_aug_r = self.graph_aug.reverse_graph()
 
-    def _preprocess(self):
-        graph_pre = deepcopy(self.graph)
+        self.node_order = {node: i for i, node in enumerate(self.node_order)}
+
+        self._dist_fw = [self._inf for _ in range(self.graph_aug.num_vertices)]
+        self._dist_bw = [self._inf for _ in range(self.graph_aug_r.num_vertices)]
+        self._final_fw = [False for _ in range(self.graph_aug.num_vertices)]
+        self._final_bw = [False for _ in range(self.graph_aug_r.num_vertices)]
+
+    def _preprocess(self, graph: Graph) -> Tuple[Graph, List[int]]:
+        graph_aug = deepcopy(graph)
 
         node_order = []
-        node_order_pq = [(-self._inf, i) for i in range(self.graph.num_vertices)]
+        node_order_pq = [(-self._inf, i) for i in range(graph.num_vertices)]
 
-        node_level = [0 for _ in range(self.graph.num_vertices)]
+        node_level = [0 for _ in range(graph.num_vertices)]
 
         new_edges = []
 
         while node_order_pq:
-            # print()
-            # print(f"Graph aug: {graph_aug.adj_list}")
             # extract the least important node
             _, node = heapq.heappop(node_order_pq)
 
-            # print(f"Chosen node: {node}")
+            predecessors = graph.get_predecessors(node)
+            successors = graph.get_successors(node)
 
-            predecessors = graph_pre.get_predecessors(node)
-            successors = graph_pre.get_successors(node)
+            shortcuts = self.get_shortcuts(graph, predecessors, successors, node)
 
-            # print(f"Predecessors: {predecessors}")
-            # print(f"Successors: {successors}")
-
-            shortcuts = self.get_shortcuts(graph_pre, predecessors, successors, node)
-
-            # print(f"Shortcuts: {shortcuts}")
-
-            new_imp = self._recompute_importance(node, predecessors, successors,
+            new_imp = self._recompute_importance(graph, node, predecessors, successors,
                                                  shortcuts, node_order, node_level)
-
-            # print(f"New importance: {new_imp}")
 
             # if new importance is not minimal anymore (compare with the top of the
             # priority queue), put it back into priority queue with the new priority
@@ -150,50 +141,44 @@ class ContractionHierarchies:
                     continue
 
             node_order.append(node)
+
             for predecessor in predecessors:
                 node_level[predecessor] = max(node_level[predecessor], node_level[node] + 1)
-            self._contract_node(graph_pre, node, shortcuts)
+
+            self._contract_node(graph, node, shortcuts)
             new_edges.extend(shortcuts)
 
-            # break
-
-        # print()
-        # print("Out of node order PQ")
-        # print(f"New edges: {new_edges}")
-
-        graph_aug = self.graph
-        for edge in new_edges:
-            graph_aug.add_edge(edge)
+        for start, end, weight in new_edges:
+            graph_aug.add_edge(start, end, weight)
 
         return graph_aug, node_order
 
+    @staticmethod
     def _recompute_importance(
-            self,
+            graph: Graph,
             node: int,
-            predecessors: List[int],
-            successors: List[int],
-            shortcuts: List[Edge],
+            predecessors: Set[int],
+            successors: Set[int],
+            shortcuts: List,
             node_order: List[int],
             node_level: List[int],
     ) -> int:
         # edge difference
         num_shortcuts = len(shortcuts)
-        in_deg = len(self.graph_r.adj_list[node])
-        out_deg = len(self.graph.adj_list[node])
+        in_deg = len(graph.adj_list_r[node])
+        out_deg = len(graph.adj_list[node])
         ed = num_shortcuts - in_deg - out_deg
 
         # number of contracted neighbors
-        contracted_nodes = set(node_order)
-        cn = len(contracted_nodes.intersection(predecessors)) \
-             + len(contracted_nodes.intersection(successors))
+        cn = len(predecessors.intersection(node_order)) + len(successors.intersection(node_order))
 
         # shortcut cover - the number of neighbors w of v such
         # that we have to shortcut to or from w after
         # contracting v
         contracted_neighbors = set()
-        for edge in shortcuts:
-            contracted_neighbors.add(edge.start)
-            contracted_neighbors.add(edge.end)
+        for start, end, _ in shortcuts:
+            contracted_neighbors.add(start)
+            contracted_neighbors.add(end)
         sc = len(contracted_neighbors)
 
         # node level - upper bound on the number of edges in
@@ -207,158 +192,151 @@ class ContractionHierarchies:
     def get_shortcuts(
             self,
             graph: Graph,
-            predecessors: List[int],
-            successors: List[int],
+            predecessors: Set[int],
+            successors: Set[int],
             node: int
-    ) -> List[Edge]:
+    ) -> List:
         shortcuts = []
 
         for predecessor in predecessors:
             # find nodes which can be accessed from predecessor ignoring
             # current node with the distance smaller or equal to the
             # distance from predecessor to this node via current node
-            witnesses = self._witness_search(graph, predecessor, node, successors)
+            witnesses = self._witness_search(graph, predecessor, node, successors, max_hops=2)
 
             for successor in successors:
                 if successor not in witnesses:
-                    weight = graph.weights[(predecessor, node)] + graph.weights[(node, successor)]
-                    shortcuts.append(Edge(predecessor, successor, weight))
+                    weight = graph.edges[(predecessor, node)] + graph.edges[(node, successor)]
+                    shortcuts.append((predecessor, successor, weight))
 
         return shortcuts
 
     @staticmethod
-    def _contract_node(graph: Graph, node: int, shortcuts: List[Edge]):
-        # print(f"Contract node: {node}")
-        graph.contract_node(node)
+    def _contract_node(graph: Graph, node: int, shortcuts: List):
+        graph.contract_vertex(node)
 
-        for edge in shortcuts:
-            # print(f"Add edge: {edge.start, edge.end, edge.weight}")
-            graph.add_edge(edge)
+        for start, end, weight in shortcuts:
+            graph.add_edge(start, end, weight)
 
     def _witness_search(
             self,
             graph: Graph,
+            predecessor: int,
             node: int,
-            forbidden_node: int,
-            successors: List[int],
+            successors: Set[int],
             max_hops: int = 1
     ) -> List[int]:
-        # print(f"Start witness search for node: {node}")
-        # print(f"Forbidden node: {forbidden_node}")
-
-        dist = [self._inf for _ in range(graph.max_vertex + 1)]
-        dist[node] = 0
-        final = [False for _ in range(graph.max_vertex + 1)]
-        pq = [(0, node)]
-        hops = [0 for _ in range(graph.max_vertex + 1)]
+        self._dist[predecessor] = 0
+        pq = [(0, predecessor)]
+        processed = set()
+        processed.add(predecessor)
 
         # max distance is the distance from the "node" to the farthest successor
         # of "forbidden node" via "forbidden node"
-        start_to_forbidden_dist = graph.weights[(node, forbidden_node)]
+        start_to_forbidden_dist = graph.edges[(predecessor, node)]
         forbidden_to_successor_dist = 0
-        for edge in graph.adj_list[forbidden_node]:
-            forbidden_to_successor_dist = max(forbidden_to_successor_dist, edge.weight)
+        for v in graph.adj_list[node]:
+            forbidden_to_successor_dist = max(forbidden_to_successor_dist,
+                                              graph.edges[(node, v)])
         max_dist = start_to_forbidden_dist + forbidden_to_successor_dist
-        # print(f"Max dist: {max_dist}")
 
         while pq:
             cur_dist, cur = heapq.heappop(pq)
-            final[cur] = True
+            self._final[cur] = True
 
             if cur_dist > max_dist:
                 break
 
-            for edge in graph.adj_list[cur]:
-                # print(edge)
+            for v in graph.adj_list[cur]:
                 # we do not want the path through the "forbidden node"
-                if (not final[edge.end]) and (edge.end != forbidden_node):
-                    # print("Inside 1")
-                    new_hops = hops[cur] + 1
-                    new_dist = dist[cur] + edge.weight
-                    if new_dist < dist[edge.end]:
-                        hops[cur] = new_hops
+                if (not self._final[v]) and (v != node):
+                    new_hops = self._hops[cur] + 1
+                    new_dist = self._dist[cur] + graph.edges[(cur, v)]
+                    if new_dist < self._dist[v]:
+                        self._hops[cur] = new_hops
                         if new_hops <= max_hops:
-                            dist[edge.end] = new_dist
-                            heapq.heappush(pq, (new_dist, edge.end))
+                            self._dist[v] = new_dist
+                            heapq.heappush(pq, (new_dist, v))
+                            processed.add(v)
 
-        # print(f"Final: {final}")
-        # print(f"Dist: {dist}")
         witnesses = []
-        for i in range(graph.max_vertex + 1):
-            if final[i] and (i in successors):
-                node_dist = dist[i]
-                if node_dist <= (start_to_forbidden_dist + graph.weights[(forbidden_node, i)]):
+        for i in successors:
+            if self._final[i]:
+                if self._dist[i] <= (start_to_forbidden_dist + graph.edges[(node, i)]):
                     witnesses.append(i)
 
-        # print(f"Found witnesses: {witnesses}")
+        for node in processed:
+            self._dist[node] = self._inf
+            self._final[node] = False
+            self._hops[node] = 0
 
         return witnesses
 
     def dist(self, start, end):
-        res = -1
-
-        dist_fw = [self._inf for _ in range(self.graph_aug.num_vertices)]
-        dist_bw = [self._inf for _ in range(self.graph_aug.num_vertices)]
-
-        dist_fw[start] = 0
-        dist_bw[end] = 0
+        self._dist_fw[start] = 0
+        self._dist_bw[end] = 0
 
         pq_fw = [(0, start)]
         pq_bw = [(0, end)]
 
-        final_fw = [False for _ in range(self.graph_aug.num_vertices)]
-        final_bw = [False for _ in range(self.graph_aug_r.num_vertices)]
-
-        node_order = {v: order for (order, v) in enumerate(self.node_order)}
-
-        start_order = node_order[start]
-        end_order = node_order[end]
-
         workset = set()
+
+        estimate = self._inf
 
         while pq_fw or pq_bw:
             if pq_fw:
                 cur_dist, cur_vertex = heapq.heappop(pq_fw)
-                # print(f"Forward pass / node {cur_vertex} / dist {cur_dist}")
                 workset.add(cur_vertex)
 
-                if not final_fw[cur_vertex]:
-                    final_fw[cur_vertex] = True
+                if self._final_bw[cur_vertex]:
+                    estimate = min(estimate, cur_dist + self._dist_bw[cur_vertex])
 
-                    # stop when the extracted node is farther thane the target
-                    if cur_dist > dist_fw[end]:
+                if not self._final_fw[cur_vertex]:
+                    self._final_fw[cur_vertex] = True
+
+                    # skip node farther than the current estimate
+                    if cur_dist > estimate:
                         continue
 
                     # process children
-                    for edge in self.graph_aug.adj_list[cur_vertex]:
-                        if not final_fw[edge.end]:
-                            new_dist = cur_dist + edge.weight
-                            if new_dist < dist_fw[edge.end]:
-                                dist_fw[edge.end] = new_dist
-                                heapq.heappush(pq_fw, (new_dist, edge.end))
+                    for v in self.graph_aug.adj_list[cur_vertex]:
+                        if (not self._final_fw[v]) \
+                                and (self.node_order[v] > self.node_order[cur_vertex]):
+                            new_dist = cur_dist + self.graph_aug.edges[(cur_vertex, v)]
+                            if new_dist < self._dist_fw[v]:
+                                self._dist_fw[v] = new_dist
+                                heapq.heappush(pq_fw, (new_dist, v))
 
             if pq_bw:
                 cur_dist, cur_vertex = heapq.heappop(pq_bw)
-                # print(f"Backward pass / node {cur_vertex} / dist {cur_dist}")
                 workset.add(cur_vertex)
 
-                if not final_bw[cur_vertex]:
-                    final_bw[cur_vertex] = True
+                if self._final_fw[cur_vertex]:
+                    estimate = min(estimate, cur_dist + self._dist_fw[cur_vertex])
 
-                    # stop when the extracted node is farther thane the target
-                    if cur_dist > dist_bw[end]:
+                if not self._final_bw[cur_vertex]:
+                    self._final_bw[cur_vertex] = True
+
+                    # skip node farther than the current estimate
+                    if cur_dist > estimate:
                         continue
 
                     # process children
-                    for edge in self.graph_aug_r.adj_list[cur_vertex]:
-                        if not final_bw[edge.end]:
-                            new_dist = cur_dist + edge.weight
-                            if new_dist < dist_bw[edge.end]:
-                                dist_bw[edge.end] = new_dist
-                                heapq.heappush(pq_bw, (new_dist, edge.end))
+                    for v in self.graph_aug_r.adj_list[cur_vertex]:
+                        if (not self._final_bw[v]) \
+                                and (self.node_order[v] > self.node_order[cur_vertex]):
+                            new_dist = cur_dist + self.graph_aug_r.edges[(cur_vertex, v)]
+                            if new_dist < self._dist_bw[v]:
+                                self._dist_bw[v] = new_dist
+                                heapq.heappush(pq_bw, (new_dist, v))
 
-        # print(dist_fw, dist_bw, workset)
-        res = self._calculate_mid_dist(workset, dist_fw, dist_bw)
+        res = self._calculate_mid_dist(workset, self._dist_fw, self._dist_bw)
+
+        for node in workset:
+            self._dist_fw[node] = self._inf
+            self._dist_bw[node] = self._inf
+            self._final_fw[node] = False
+            self._final_bw[node] = False
 
         return res
 
@@ -378,12 +356,12 @@ def run_test():
     test = Test(
         n=4,
         m=4,
-        edges=(
-            Edge(0, 1, 1),
-            Edge(3, 0, 2),
-            Edge(1, 2, 2),
-            Edge(0, 2, 5),
-        ),
+        edges={
+            (0, 1): 1,
+            (3, 0): 2,
+            (1, 2): 2,
+            (0, 2): 5,
+        },
         queries=(
             (0, 2, 3),
         )
@@ -392,9 +370,9 @@ def run_test():
     test = Test(
         n=2,
         m=1,
-        edges=(
-            Edge(0, 1, 1),
-        ),
+        edges={
+            (0, 1): 1,
+        },
         queries=(
             (0, 0, 0),
             (1, 1, 0),
@@ -403,46 +381,46 @@ def run_test():
         )
     )
 
-    # test = Test(
-    #     n=5,
-    #     m=20,
-    #     edges=[
-    #         Edge(0, 1, 667),
-    #         Edge(0, 2, 677),
-    #         Edge(0, 3, 700),
-    #         Edge(0, 4, 622),
-    #         Edge(1, 0, 118),
-    #         Edge(1, 2, 325),
-    #         Edge(1, 3, 784),
-    #         Edge(1, 4, 11),
-    #         Edge(2, 0, 585),
-    #         Edge(2, 1, 956),
-    #         Edge(2, 3, 551),
-    #         Edge(2, 4, 559),
-    #         Edge(3, 0, 503),
-    #         Edge(3, 1, 722),
-    #         Edge(3, 2, 331),
-    #         Edge(3, 4, 366),
-    #         Edge(4, 0, 880),
-    #         Edge(4, 1, 883),
-    #         Edge(4, 2, 461),
-    #         Edge(4, 3, 228),
-    #     ],
-    #     queries=(
-    #         (0, 0, 0),
-    #         (0, 1, 667),
-    #         (0, 2, 677),
-    #         (0, 3, 700),
-    #         (0, 4, 622),
-    #         (1, 0, 118),
-    #         (1, 1, 0),
-    #         (1, 2, 325),
-    #         (1, 3, 239),
-    #         (1, 4, 11),
-    #     )
-    # )
+    test = Test(
+        n=5,
+        m=20,
+        edges={
+            (0, 1): 667,
+            (0, 2): 677,
+            (0, 3): 700,
+            (0, 4): 622,
+            (1, 0): 118,
+            (1, 2): 325,
+            (1, 3): 784,
+            (1, 4): 11,
+            (2, 0): 585,
+            (2, 1): 956,
+            (2, 3): 551,
+            (2, 4): 559,
+            (3, 0): 503,
+            (3, 1): 722,
+            (3, 2): 331,
+            (3, 4): 366,
+            (4, 0): 880,
+            (4, 1): 883,
+            (4, 2): 461,
+            (4, 3): 228,
+        },
+        queries=(
+            (0, 0, 0),
+            (0, 1, 667),
+            (0, 2, 677),
+            (0, 3, 700),
+            (0, 4, 622),
+            (1, 0, 118),
+            (1, 1, 0),
+            (1, 2, 325),
+            (1, 3, 239),
+            (1, 4, 11),
+        )
+    )
 
-    graph = Graph(list(range(test.n)), test.m, list(test.edges))
+    graph = Graph(list(range(test.n)), test.edges)
     ch = ContractionHierarchies(graph)
 
     print(f"Node order: {ch.node_order}")
@@ -457,13 +435,13 @@ def run_test():
 def run_algo():
     num_vertices, num_edges = map(int, sys.stdin.readline().split())
 
-    edges = []
+    edges = dict()
     for _ in range(num_edges):
         start, end, weight = map(int, sys.stdin.readline().split())
         start, end = start - 1, end - 1
-        edges.append(Edge(start, end, weight))
+        edges[(start, end)] = weight
 
-    graph = Graph(list(range(num_vertices)), num_edges, edges)
+    graph = Graph(list(range(num_vertices)), edges)
     ch = ContractionHierarchies(graph)
 
     print("Ready")
