@@ -17,4 +17,8 @@ ___
 * [Homeworks](/3%20Algorithms%20on%20Graph/Homeworks)
 * [Lectures](/3%20Algorithms%20on%20Graph/Lectures)
 
+### [4 Algorithms on Strings](/4%20Algorithms%20on%20Strings)
+* [Homeworks](/4%20Algorithms%20on%20Strings/Homeworks)
+* [Lectures](/4%20Algorithms%20on%20Strings/Lectures)
+
 ### [Certificates](/Certificates)
