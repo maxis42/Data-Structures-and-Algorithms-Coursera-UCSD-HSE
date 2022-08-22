@@ -18,18 +18,18 @@ class SuffixArray:
 
     def _build_suffix_array(self, text):
         order = self._sort_characters(text)
-        print(f"Order: {order}")
+        # print(f"Order: {order}")
         equiv_class = self._compute_char_equiv_class(text, order)
-        print(f"Equiv class: {equiv_class}")
+        # print(f"Equiv class: {equiv_class}")
 
         cur_len = 1
 
         while cur_len < len(text):
-            print(f"Cur length = {cur_len}")
+            # print(f"Cur length = {cur_len}")
             order = self._sort_doubled(text, cur_len, order, equiv_class)
-            print(f"Order: {order}")
+            # print(f"Order: {order}")
             equiv_class = self._update_equiv_classes(order, equiv_class, cur_len)
-            print(f"Class: {equiv_class}")
+            # print(f"Class: {equiv_class}")
             cur_len *= 2
 
         return order
