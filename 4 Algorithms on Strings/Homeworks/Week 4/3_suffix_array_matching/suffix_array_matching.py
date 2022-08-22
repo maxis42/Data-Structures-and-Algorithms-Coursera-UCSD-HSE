@@ -1,6 +1,7 @@
 # python3
 import sys
 from collections import defaultdict
+from time import sleep
 
 
 class SuffixArrayMatching:
@@ -108,9 +109,10 @@ class SuffixArrayMatching:
         return new_equiv_class
 
     def find_occurrences(self, pattern):
-        # find START index with binary search
         # the first index of suffix array where
-        # pattern == text[suffix_array[START]:(suffix_array[START] + len(pattern))]
+        # text[suffix_array[index]:] starts with pattern
+        # if no such suffix than its possible position
+        # use binary search
         min_index = 1
         max_index = len(self._text) - 1
 
@@ -118,7 +120,8 @@ class SuffixArrayMatching:
             mid_index = (min_index + max_index) // 2
 
             start_pos = self.suffix_array[mid_index]
-            end_pos = start_pos + len(pattern)
+            suf_len = min(len(pattern), len(self._text) - start_pos - 1)
+            end_pos = start_pos + suf_len
             mid_suffix = self._text[start_pos:end_pos]
 
             if mid_suffix < pattern:
@@ -136,9 +139,11 @@ class SuffixArrayMatching:
             # START index suffix doesn't contain pattern
             return set()
 
-        # find end index with binary search from previously found start index
         # the first index of suffix array where
-        # pattern > text[suffix_array[START]:(suffix_array[START] + len(pattern))]
+        # text[suffix_array[index]:] doesn't start with pattern
+        # and text[suffix_array[index]:] > pattern
+        # if no such suffix than its possible position
+        # use binary search
         max_index = len(self._text)
 
         while min_index < max_index:
@@ -157,17 +162,18 @@ class SuffixArrayMatching:
         end = min_index
 
         # get the result indices
-        res = set()
-        if start <= end:
-            for i in range(start, end):
-                res.add(self.suffix_array[i])
+        res = {self.suffix_array[i] for i in range(start, end)}
         return res
 
 
 def run_test():
-    text = "TCCTCTATGAGATCCTATTCTATGAAACCTTCAGACCAAAATTCTCCGGC"
     alphabet = "ACGT"
-    patterns = ["CCT", "CAC", "GAG", "CAG", "ATC"] # 1 8 11 13 27 31
+
+    text = "TCCTCTATGAGATCCTATTCTATGAAACCTTCAGACCAAAATTCTCCGGC"
+    patterns = ["CCT", "CAC", "GAG", "CAG", "ATC"]  # 1 8 11 13 27 31
+
+    # text = "ATATATA"
+    # patterns = ["ATA", "C", "TATAT"]
     sa = SuffixArrayMatching(text, alphabet)
     occs = set()
     for pattern in patterns:

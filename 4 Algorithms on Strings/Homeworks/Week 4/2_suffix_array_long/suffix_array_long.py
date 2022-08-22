@@ -122,5 +122,5 @@ def run_algo():
 
 
 if __name__ == "__main__":
-    run_test()
-    # run_algo()
+    # run_test()
+    run_algo()
