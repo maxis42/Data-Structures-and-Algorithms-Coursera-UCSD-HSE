@@ -53,11 +53,10 @@ class SuffixTree:
         self.alphabet = sorted(alphabet)
 
         self.root = self._construct_tree(self.text, self.suffix_arr, self.lcp)
-        self.tree = self._construct_tree_extra(self.root)
-        # self.print_tree(self.tree)
+        self.edges = self._construct_edges(self.root)
 
-    def _construct_tree_extra(self, root):
-        tree = dict()
+    def _construct_edges(self, root):
+        edges = dict()
         root.node_id = 0
         cur_id = 1
         q = deque([root])
@@ -65,22 +64,22 @@ class SuffixTree:
             cur = q.popleft()
 
             if cur.children:
-                tree[cur.node_id] = []
+                edges[cur.node_id] = []
                 for char in self.alphabet:
                     if char in cur.children:
                         child = cur.children[char]
                         child.node_id = cur_id
                         cur_id += 1
-                        tree[cur.node_id].append((child.node_id, child.edge_start, child.edge_end))
+                        edges[cur.node_id].append((child.node_id, child.edge_start, child.edge_end))
                         q.append(child)
 
-        return tree
+        return edges
 
-    def print_tree(self, tree):
-        for node in tree:
+    def print_edges(self, edges):
+        for node in edges:
             s = "Node {} / edges ".format(node)
             edges_s = ""
-            for edge in tree[node]:
+            for edge in edges[node]:
                 edges_s += "#{}-{} ".format(edge[0], self.text[edge[1]:(edge[2] + 1)])
             s += edges_s
             print(s)
@@ -170,9 +169,9 @@ class SuffixTree:
         stack = [(0, 0)]
         while stack:
             node, edge_index = stack.pop()
-            if node not in self.tree:
+            if node not in self.edges:
                 continue
-            edges = self.tree[node]
+            edges = self.edges[node]
             if edge_index + 1 < len(edges):
                 stack.append((node, edge_index + 1))
             print("%d %d" % (edges[edge_index][1], edges[edge_index][2] + 1))
