@@ -119,7 +119,7 @@ class SuffixTree:
         leaf = SuffixTreeNode(
             parent=node,
             string_depth=len(text) - suffix,
-            edge_start=suffix + node.string_depth,
+            edge_start=node.string_depth + suffix,
             edge_end=len(text) - 1,
         )
         node.children[text[leaf.edge_start]] = leaf

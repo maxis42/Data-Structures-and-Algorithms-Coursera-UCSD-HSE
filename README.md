@@ -21,4 +21,8 @@ ___
 * [Homeworks](/4%20Algorithms%20on%20Strings/Homeworks)
 * [Lectures](/4%20Algorithms%20on%20Strings/Lectures)
 
+### [5 Advanced Algorithms and Complexity](/5%20Advanced%20Algorithms%20and%20Complexity)
+* [Homeworks](/5%20Advanced%20Algorithms%20and%20Complexity/Homeworks)
+* [Lectures](/5%20Advanced%20Algorithms%20and%20Complexity/Lectures)
+
 ### [Certificates](/Certificates)
