@@ -39,6 +39,7 @@ class StockCharts:
         result = self.min_charts(stock_data)
         self.write_response(result)
 
+
 if __name__ == '__main__':
     stock_charts = StockCharts()
     stock_charts.solve()

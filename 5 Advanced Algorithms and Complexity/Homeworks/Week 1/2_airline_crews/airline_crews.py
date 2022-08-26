@@ -28,6 +28,7 @@ class MaxMatching:
         matching = self.find_matching(adj_matrix)
         self.write_response(matching)
 
+
 if __name__ == '__main__':
     max_matching = MaxMatching()
     max_matching.solve()
