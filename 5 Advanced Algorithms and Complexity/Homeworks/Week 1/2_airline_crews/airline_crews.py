@@ -92,7 +92,8 @@ class FlowGraph:
             if not path:
                 break
 
-            # find min flow through the path
+            # find min flow thro
+            # ugh the path
             min_flow = path[0][1].flow
             for _, edge in path[1:]:
                 min_flow = min(min_flow, edge.flow)
