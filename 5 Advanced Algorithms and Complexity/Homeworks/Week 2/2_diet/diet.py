@@ -55,7 +55,7 @@ class DietProblem:
     def __init__(self, n, m, A, b, c):
         # the number of restrictions on your diet
         self.n = n
-        self._n = self.n + 1
+        self._n = self.n + 1  # add equation to tackle infinity problem (see the assignment)
         # the number of all available dishes and drinks
         self.m = m
         # coefficients of linear inequalities
