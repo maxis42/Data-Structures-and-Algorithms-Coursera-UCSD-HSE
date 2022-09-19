@@ -11,8 +11,6 @@ class AdAllocation:
     Use SIMPLEX method.
     """
 
-    INF = 10 ** 9
-
     def __init__(self, A, b, c):
         self.A = A
         self.b = b
