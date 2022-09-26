@@ -1,5 +1,4 @@
 # python3
-from itertools import combinations
 from collections import defaultdict
 
 
@@ -96,7 +95,7 @@ def run_test():
 
 def run_algo():
     num_vertices, num_edges = map(int, input().split())
-    edges = [list(map(int, input().split())) for i in range(num_edges)]
+    edges = [list(map(int, input().split())) for _ in range(num_edges)]
     hp_to_sat = HamiltonianPathToSAT(num_vertices, edges)
     sat = hp_to_sat.convert()
     print(len(sat), num_vertices**2)
