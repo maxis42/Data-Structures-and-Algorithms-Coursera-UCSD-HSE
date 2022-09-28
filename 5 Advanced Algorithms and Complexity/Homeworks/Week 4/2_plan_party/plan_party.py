@@ -1,11 +1,11 @@
-#uses python3
+# uses python3
 
 import sys
 import threading
 
 # This code is used to avoid stack overflow issues
-sys.setrecursionlimit(10**6) # max depth of recursion
-threading.stack_size(2**26)  # new thread will get stack of such size
+sys.setrecursionlimit(10 ** 6)  # max depth of recursion
+threading.stack_size(2 ** 26)  # new thread will get stack of such size
 
 
 class Vertex:
@@ -44,8 +44,8 @@ def MaxWeightIndependentTreeSubset(tree):
 
 
 def main():
-    tree = ReadTree();
-    weight = MaxWeightIndependentTreeSubset(tree);
+    tree = ReadTree()
+    weight = MaxWeightIndependentTreeSubset(tree)
     print(weight)
 
 
