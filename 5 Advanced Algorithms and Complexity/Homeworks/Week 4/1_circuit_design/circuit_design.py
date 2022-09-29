@@ -1,11 +1,4 @@
 # python3
-import sys
-import threading
-from collections import deque
-
-# This code is used to avoid stack overflow issues
-sys.setrecursionlimit(10**6)  # max depth of recursion
-threading.stack_size(2**26)  # new thread will get stack of such size
 
 
 class ImplicationGraph:
@@ -27,7 +20,7 @@ class ImplicationGraph:
          ->  0,  1,  2,  3,  4,  5,  6,  7
         """
         to_inner_id = dict()
-        to_orig_id = dict()
+        to_orig_id = [0 for _ in range(n_vars*2)]
         for i in range(1, n_vars + 1):
             inner_i_pos = n_vars + i - 1
             inner_i_neg = n_vars - i
@@ -78,16 +71,18 @@ class ImplicationGraph:
         return postorder
 
     @staticmethod
-    def explore_vertex(v, visited, adj_list, explored):
-        q = deque([v])
-        while q:
-            cur = q.popleft()
+    def explore_vertex(v, visited, adj_list):
+        explored = set()
+        stack = [v]
+        while stack:
+            cur = stack.pop()
             if not visited[cur]:
                 visited[cur] = True
                 explored.add(cur)
                 for child in adj_list[cur]:
                     if not visited[child]:
-                        q.append(child)
+                        stack.append(child)
+        return explored
 
     @staticmethod
     def dfs(adj_list):
@@ -102,18 +97,17 @@ class ImplicationGraph:
                 while stack:
                     last = stack[-1]
 
-                    n_children = 0
+                    no_children = True
                     for child in adj_list[last]:
                         if not visited[child]:
                             stack.append(child)
                             visited[child] = True
-                            n_children += 1
+                            no_children = False
                             break
 
-                    if n_children == 0:
+                    if no_children:
                         stack.pop()
                         postorder.append(last)
-
         return postorder
 
     def find_sccs(self):
@@ -121,15 +115,14 @@ class ImplicationGraph:
         Find strongly connected components.
         """
         postorder_r = self.dfs(self._adj_list_r)
-        visited = [False] * self._n
 
+        visited = [False] * self._n
         sccs = []
         sccs_id = [-1 for _ in range(self._n)]
         sccs_id_i = 0
         for v in reversed(postorder_r):
             if not visited[v]:
-                explored = set()
-                self.explore_vertex(v, visited, self._adj_list, explored)
+                explored = self.explore_vertex(v, visited, self._adj_list)
                 sccs.append(explored)
 
                 for e in explored:
@@ -158,21 +151,17 @@ class ImplicationGraph:
         sccs = [sccs[i] for i in reversed(postorder)]
         return sccs
 
-    def is_unsatisfiable(self, sccs):
+    def is_unsatisfiable(self, sccs_id):
         """
         Check if x and not-x lie in the same SCC
         if so, then the formula is unsatisfiable.
         """
         unsatisfiable = False
         for x in range(1, self.n_vars + 1):
-            for scc in sccs:
-                x_i = self.to_inner_id[x]
-                not_x_i = self.to_inner_id[-x]
-                if (x_i in scc) and (not_x_i in scc):
-                    # formula is unsatisfiable
-                    unsatisfiable = True
-                    break
-            if unsatisfiable:
+            x_scc_i = sccs_id[self.to_inner_id[x]]
+            not_x_scc_i = sccs_id[self.to_inner_id[-x]]
+            if x_scc_i == not_x_scc_i:
+                unsatisfiable = True
                 break
         return unsatisfiable
 
@@ -185,7 +174,7 @@ class TwoSAT:
     def is_satisfiable(self):
         ig = ImplicationGraph(self.n_vars, self.clauses)
         sccs, sccs_id = ig.find_sccs()
-        if ig.is_unsatisfiable(sccs):
+        if ig.is_unsatisfiable(sccs_id):
             return None
         sccs = ig.get_sccs_in_topological_order(sccs, sccs_id)
 
@@ -277,6 +266,3 @@ def run_algo():
 if __name__ == "__main__":
     # run_test()
     run_algo()
-
-    # This is to avoid stack overflow issues
-    # threading.Thread(target=run_algo).start()
