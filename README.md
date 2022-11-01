@@ -25,4 +25,8 @@ ___
 * [Homeworks](/5%20Advanced%20Algorithms%20and%20Complexity/Homeworks)
 * [Lectures](/5%20Advanced%20Algorithms%20and%20Complexity/Lectures)
 
+### [6 Genome Assembly](/6%20Genome%20Assembly)
+* [Homeworks](/6%20Genome%20Assembly/Homeworks)
+* [Lectures](/6%20Genome%20Assembly/Lectures)
+
 ### [Certificates](/Certificates)
