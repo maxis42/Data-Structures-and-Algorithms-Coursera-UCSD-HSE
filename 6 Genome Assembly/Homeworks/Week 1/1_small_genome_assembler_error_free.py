@@ -1,10 +1,10 @@
 # python 3
-import heapq
-from copy import deepcopy
-from time import sleep
 
 
-class SmallGenomeAssemblerErrorFree:
+class GenomeAssembler:
+    """
+    Error free genome assembler for small genome.
+    """
     STR_LEN = 100
 
     def __init__(self, dataset):
@@ -46,8 +46,8 @@ class SmallGenomeAssemblerErrorFree:
     @staticmethod
     def find_bigger_overlap_size(s1, s2, prev_overlap_size):
         res = None
-        for overlap_size in range(SmallGenomeAssemblerErrorFree.STR_LEN - 1, prev_overlap_size, -1):
-            if s2.startswith(s1[(SmallGenomeAssemblerErrorFree.STR_LEN - overlap_size):]):
+        for overlap_size in range(GenomeAssembler.STR_LEN - 1, prev_overlap_size, -1):
+            if s2.startswith(s1[(GenomeAssembler.STR_LEN - overlap_size):]):
                 res = overlap_size
                 break
         return res
@@ -66,7 +66,7 @@ def run_test():
         "agttt",  # 7
         "cagag",  # 8
     ]
-    t = SmallGenomeAssemblerErrorFree(dataset)
+    t = GenomeAssembler(dataset)
     ans = t.solve()
     print(ans)
 
@@ -79,9 +79,7 @@ def run_algo():
         if s != dataset[-1]:
             dataset.append(s)
 
-    dataset = list(set(dataset))
-
-    t = SmallGenomeAssemblerErrorFree(dataset)
+    t = GenomeAssembler(dataset)
     ans = t.solve()
     print(ans)
 
