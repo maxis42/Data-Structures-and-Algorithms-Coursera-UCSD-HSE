@@ -1,10 +1,6 @@
 # python 3
-from math import sqrt, factorial
+from math import sqrt
 from itertools import permutations
-
-
-class Node:
-    pass
 
 
 class PuzzleAssembly:
