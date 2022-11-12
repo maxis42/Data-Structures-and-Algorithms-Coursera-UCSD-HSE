@@ -1,5 +1,5 @@
 # python 3
-from time import sleep
+from collections import defaultdict
 
 
 class BubbleDetection:
@@ -8,64 +8,71 @@ class BubbleDetection:
         self.threshold = threshold
         self.reads = reads
 
+        self._adj_list_cnt = None
+        self._in_stack = None
+
     def num_bubbles(self):
         k_mers = self.k_mers()
         k_min_1_mers = self.k_min_1_mers(k_mers)
 
         n = len(k_min_1_mers)
-        print("Vertices:")
-        for i in range(n):
-            print(k_min_1_mers[i], i, " ", end="")
         edges = self.de_bruijn_graph(k_mers, k_min_1_mers)
-
-        n = 8
-        edges = (
-            (0, 1), (0, 7), (0, 5),
-            (1, 2), (1, 7),
-            (2, 3), (2, 7),
-            (3, 4), (3, 7),
-            (5, 7), (5, 6),
-            (6, 4), (6, 7),
-            (7, 4),
-        )
-        self.threshold = 4
-
-        # print("Edges:")
-        # for v1, v2 in edges:
-        #     print(f"{v1}->{v2} {k_min_1_mers[v1]}->{k_min_1_mers[v2]}")
         adj_list = self.edges_to_adj_list(n, edges)
-        print(f"\nadj_list: {adj_list}")
 
         n_bubbles = 0
-        for v in range(n):
-            paths = self.dfs_threshold_paths(v, adj_list, self.threshold)
-            n_bubbles += 0
+        for v_start in range(n):
+            paths_raw = self.dfs_threshold_paths(v_start, adj_list, self.threshold)
+
+            paths = defaultdict(list)
+            for path in paths_raw:
+                paths[path[-1]].append(path)
+
+            for v_end, paths_cur in paths.items():
+                if len(paths_cur) <= 1:
+                    continue
+
+                for i in range(len(paths_cur) - 1):
+                    path_i_inner = set(paths_cur[i][1:-1])
+                    for j in range(i, len(paths_cur)):
+                        path_j_inner = set(paths_cur[j][1:-1])
+                        if len(path_i_inner.intersection(path_j_inner)) == 0:
+                            n_bubbles += 1
         return n_bubbles
 
-    @staticmethod
-    def dfs_threshold_paths(v, adj_list, threshold):
-        paths = []
-        visited = [False] * len(adj_list)
-        stack = [v]
+    def dfs_threshold_paths(self, v_start, adj_list, threshold):
+        if self._adj_list_cnt is None:
+            self._adj_list_cnt = [0] * len(adj_list)
+        if self._in_stack is None:
+            self._in_stack = [False] * len(adj_list)
+
+        paths = set()
+        stack = [v_start]
+        self._in_stack[v_start] = True
+
         while stack:
-            if len(stack) == (threshold + 1):
-                paths.append(tuple(stack))
-                print(tuple(stack))
+            if len(stack) > 1:
+                paths.add(tuple(stack))
 
-                visited[stack[-1]] = True
-                stack.pop()
-                print(visited)
-
-            for v_next in adj_list[stack[-1]]:
-                if not visited[v_next]:
+            v_last = stack[-1]
+            adj_list_i = self._adj_list_cnt[v_last]
+            while adj_list_i < len(adj_list[v_last]):
+                v_next = adj_list[v_last][adj_list_i]
+                adj_list_i += 1
+                if not self._in_stack[v_next]:
+                    self._adj_list_cnt[v_last] = adj_list_i
                     stack.append(v_next)
+                    self._in_stack[v_next] = True
                     break
             else:
-                visited[stack[-1]] = True
-                for v_next in adj_list[stack[-1]]:
-                    visited[v_next] = False
                 stack.pop()
-        print(f"Vector {v} paths: {paths}")
+                self._in_stack[v_last] = False
+                self._adj_list_cnt[v_last] = 0
+
+            if len(stack) == (threshold + 1):
+                paths.add(tuple(stack))
+                v_last = stack.pop()
+                self._in_stack[v_last] = False
+                self._adj_list_cnt[v_last] = 0
         return paths
 
     def k_mers(self):
@@ -126,5 +133,5 @@ def run_algo():
 
 
 if __name__ == "__main__":
-    run_test()
-    # run_algo()
+    # run_test()
+    run_algo()
