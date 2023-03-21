@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 def get_remainders(n, m):
@@ -42,6 +41,5 @@ def get_fibonacci_part_sum_last_digit(m, n):
 
 
 if __name__ == '__main__':
-    input_new = sys.stdin.read()
-    m, n = map(int, input_new.split())
+    m, n = map(int, input().split())
     print(get_fibonacci_part_sum_last_digit(m, n))

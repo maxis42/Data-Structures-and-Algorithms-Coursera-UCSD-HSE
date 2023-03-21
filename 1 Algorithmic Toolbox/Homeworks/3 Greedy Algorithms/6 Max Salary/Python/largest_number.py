@@ -1,6 +1,5 @@
 # Uses python3
 
-import sys
 from functools import cmp_to_key
 
 
@@ -70,9 +69,7 @@ def largest_number_fast(digits):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-
-    data = input.split()
+    data = input().split()
     a = data[1:]
 
     print(largest_number_fast(a))

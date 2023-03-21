@@ -8,5 +8,6 @@ def calc_fib(n):
     return fib_nums[n]
 
 
-n = int(input())
-print(calc_fib(n))
+if __name__ == "__main__":
+    n = int(input())
+    print(calc_fib(n))

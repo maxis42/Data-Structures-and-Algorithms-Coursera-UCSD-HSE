@@ -4,8 +4,6 @@
 # F1^2 + F2^2 + ... Fn^2 = Fn * (Fn + Fn-1)
 # last digit ld Fn_sum_sq_ld = Fn_ld * (Fn_ld + Fn-1_ld)
 
-import sys
-
 
 def get_fibonacci_huge_mod(n, m):
     if n <= 1:
@@ -34,5 +32,5 @@ def get_fibonacci_sum_squares_last_digit(n):
 
 
 if __name__ == '__main__':
-    n = int(sys.stdin.read())
+    n = int(input())
     print(get_fibonacci_sum_squares_last_digit(n))

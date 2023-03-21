@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 def gcd(a, b):
@@ -10,6 +9,5 @@ def gcd(a, b):
 
 
 if __name__ == "__main__":
-    input_nums = sys.stdin.read()
-    a, b = map(int, input_nums.split())
+    a, b = map(int, input().split())
     print(gcd(a, b))

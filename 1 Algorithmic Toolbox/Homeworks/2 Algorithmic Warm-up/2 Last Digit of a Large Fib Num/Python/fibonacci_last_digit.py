@@ -8,5 +8,6 @@ def calc_fib_last_digit(n):
     return fib_nums_last_dig[n]
 
 
-n = int(input())
-print(calc_fib_last_digit(n))
+if __name__ == "__main__":
+    n = int(input())
+    print(calc_fib_last_digit(n))
