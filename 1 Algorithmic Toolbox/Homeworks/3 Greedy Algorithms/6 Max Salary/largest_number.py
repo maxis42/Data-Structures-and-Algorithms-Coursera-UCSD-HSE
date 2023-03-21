@@ -27,31 +27,24 @@ def circum_fill_str(s, length):
     return s
 
 
-def compare_by_position(item1, item2):
+def compare_by_position(str_num1, str_num2):
     """
-    If items lengths are not equal, circularly fill smaller item
-    Compare by first non-equal number on same position
+    Circularly fill numbers to the combined length.
+    Compare by first non-equal number on same position.
 
-    Input: item1, item2 - str
-    Output: 1 if item1 > item2 else -1
+    Input: str_num1, str_num2 - str
+    Output: 1 if str_num1 is greater when combined with str_num2 than str_num2 else -1
     """
-    items = [item1, item2]
+    total_len = len(str_num1) + len(str_num2)
 
-    item_len0 = len(items[0])
-    item_len1 = len(items[1])
-    item_len = max(item_len0, item_len1)
-
-    # circularly extend the smaller item
-    if item_len0 != item_len1:
-        if item_len0 < item_len:
-            items[0] = circum_fill_str(items[0], item_len)
-        else:
-            items[1] = circum_fill_str(items[1], item_len)
+    # circularly extend numbers
+    str_num1 = circum_fill_str(str_num1, total_len)
+    str_num2 = circum_fill_str(str_num2, total_len)
 
     cmp_flag = -1
 
-    for i in range(item_len):
-        c1, c2 = int(items[0][i]), int(items[1][i])
+    for i in range(total_len):
+        c1, c2 = int(str_num1[i]), int(str_num2[i])
         if c1 != c2:
             if c1 > c2:
                 cmp_flag = +1
@@ -69,7 +62,7 @@ def largest_number_fast(digits):
 
 
 if __name__ == '__main__':
-    data = input().split()
-    a = data[1:]
+    n = input()
+    nums = input().split()
 
-    print(largest_number_fast(a))
+    print(largest_number_fast(nums))
