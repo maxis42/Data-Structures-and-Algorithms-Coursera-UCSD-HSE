@@ -5,10 +5,11 @@ import sys
 def gcd(a, b):
     if b == 0:
         return a
-    a_remainder = a % b
-    return gcd(b, a_remainder)
+    a = a % b
+    return gcd(b, a)
 
 
-input_nums = sys.stdin.read()
-a, b = map(int, input_nums.split())
-print(gcd(a, b))
+if __name__ == "__main__":
+    input_nums = sys.stdin.read()
+    a, b = map(int, input_nums.split())
+    print(gcd(a, b))

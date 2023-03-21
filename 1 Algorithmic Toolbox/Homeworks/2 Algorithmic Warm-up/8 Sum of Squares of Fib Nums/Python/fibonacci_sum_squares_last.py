@@ -29,8 +29,8 @@ def get_fibonacci_sum_squares_last_digit(n):
     fn1_ld = get_fibonacci_huge_mod(n, 10)
     fn2_ld = get_fibonacci_huge_mod(n-1, 10)
 
-    sum_Squares_ld = fn1_ld * (fn1_ld + fn2_ld) % 10
-    return sum_Squares_ld
+    sum_squares_ld = fn1_ld * (fn1_ld + fn2_ld) % 10
+    return sum_squares_ld
 
 
 if __name__ == '__main__':

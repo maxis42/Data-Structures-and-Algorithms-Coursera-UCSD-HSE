@@ -7,7 +7,7 @@ def calc_fib(n):
         fib_new = fib_1 + fib_2
         fib_1, fib_2 = fib_2, fib_new
     
-    return fib_new
+    return fib_2
 
 
 n = int(input())
