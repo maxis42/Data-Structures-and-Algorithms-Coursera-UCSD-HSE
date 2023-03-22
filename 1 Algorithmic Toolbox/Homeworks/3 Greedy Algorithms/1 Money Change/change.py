@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 def get_change(m):
@@ -15,5 +14,5 @@ def get_change(m):
 
 
 if __name__ == '__main__':
-    m = int(sys.stdin.read())
+    m = int(input())
     print(get_change(m))

@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 def optimal_summands(n):
@@ -18,8 +17,7 @@ def optimal_summands(n):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    n = int(input)
+    n = int(input())
 
     summands = optimal_summands(n)
 
