@@ -6,8 +6,12 @@ ___
 ___
 
 ### [1 Algorithmic Toolbox](/1%20Algorithmic%20Toolbox)
-* [Homeworks](/1%20Algorithmic%20Toolbox/Homeworks)
-* [Lectures](/1%20Algorithmic%20Toolbox/Lectures)
+* [1 Programming Challenges](/1%20Algorithmic%20Toolbox/1%20Programming%20Challenges)
+* [2 Algorithmic Warm-up](/1%20Algorithmic%20Toolbox/2%20Algorithmic%20Warm-up)
+* [3 Greedy Algorithms](/1%20Algorithmic%20Toolbox/3%20Greedy%20Algorithms)
+* [4 Divide-and-Conquer](/1%20Algorithmic%20Toolbox/4%20Divide-and-Conquer)
+* [5 Dynamic Programming 1](/1%20Algorithmic%20Toolbox/5%20Dynamic%20Programming%201)
+* [6 Dynamic Programming 2](/1%20Algorithmic%20Toolbox/6%20Dynamic%20Programming%202)
 
 ### [2 Data Structures](/2%20Data%20Structures)
 * [Homeworks](/2%20Data%20Structures/Homeworks)
