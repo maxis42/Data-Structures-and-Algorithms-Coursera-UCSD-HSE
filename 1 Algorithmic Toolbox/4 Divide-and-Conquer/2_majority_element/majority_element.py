@@ -1,94 +1,56 @@
 # Uses python3
+import sys
 from numpy import random
+sys.setrecursionlimit(200000)
 
 
-def get_majority_element_naive(arr, left, right):
-    if left == right:
-        return -1
-    if left + 1 == right:
-        return arr[left]
-    # write your code here
-    for i in range(right):
-        cur_elem = arr[i]
-        cnt = 0
-        for j in range(right):
-            if arr[j] == cur_elem:
-                cnt += 1
-        # print('naive:', cur_elem, cnt, right/2)
-        if cnt > right/2:
-            return cur_elem
-    return -1
-
-
-def get_majority_element(arr, left, right):
-    # check array on zero elements
-    if left == right:
-        return -1
-
-    # check array on only one element
-    if left + 1 == right:
-        return arr[left]
-
-    # sort the array to get n*log(n) complexity
-    arr.sort()
-
-    # initialize counters
-    cur_elem = arr[0]
-    cur_cnt = 1
-    max_elem = arr[0]
-    max_cnt = 1
-
-    # iterate through sorted array
-    for i in range(1, right):
-        if arr[i] == cur_elem:
-            cur_cnt += 1
+def majority_element_fast(arr):
+    d = dict()
+    for a in arr:
+        if a not in d:
+            d[a] = 1
         else:
-            if cur_cnt > max_cnt:
-                max_elem = cur_elem
-                max_cnt = cur_cnt
-            cur_elem = arr[i]
-            cur_cnt = 1
+            d[a] += 1
 
-    # last element check
-    if cur_cnt > max_cnt:
-        max_elem = cur_elem
-        max_cnt = cur_cnt
-
-    # print('fast:', max_elem, max_cnt, right/2)
-
-    # check for majority
-    if max_cnt > right/2:
-        return max_elem
-
-    # return -1 if no majority element
-    return -1
+    maj = len(arr) // 2 + 1
+    for k, v in d.items():
+        if v >= maj:
+            return k, v
+    return -1, -1
 
 
-# divide-and-conquer algorithm
-# n*log(n) complexity
-# T(n) = 2*T(n/2) + Teta(n)
-def get_majority_element_divandconq(arr, left, right):
+def majority_element_div_and_conq(arr, left, right):
     # last tree level
-    if (right - left) == 1:
-        return arr[left]
+    if left == right:
+        return arr[left], 1
     else:
         # split point
         mid = (left + right) // 2
 
-        left_maj_elem = get_majority_element(arr, left, mid)
-        right_maj_elem = get_majority_element(arr, mid+1, right)
+        left_maj, n_left_maj = majority_element_div_and_conq(arr, left, mid)
+        right_maj, n_right_maj = majority_element_div_and_conq(arr, mid + 1, right)
 
-        # define whether there is a majority element for the part of the array
-        # majority elements, exclude -1
-        maj_elems = (a for a in (left_maj_elem, right_maj_elem) if a != -1)
-        for maj_elem in maj_elems:
-            cnt = 0
-            for i in range(left, right):
-                if arr[i] == maj_elem:
-                    cnt += 1
-            if cnt > (right - left) / 2:
-                return maj_elem
-    return -1
+        if left_maj == right_maj:
+            if left_maj == -1:
+                return -1, -1
+            else:
+                return left_maj, n_left_maj + n_right_maj
+
+        for i in range(mid + 1, right + 1):
+            if arr[i] == left_maj:
+                n_left_maj += 1
+
+        for i in range(left, mid + 1):
+            if arr[i] == right_maj:
+                n_right_maj += 1
+
+        maj = (right - left + 1) // 2 + 1
+        if n_left_maj >= maj:
+            return left_maj, n_left_maj
+        elif n_right_maj >= maj:
+            return right_maj, n_right_maj
+        else:
+            return -1, -1
 
 
 def stress_test():
@@ -96,28 +58,28 @@ def stress_test():
     i = 0
     while flag_correct:
         N = random.randint(1, 10)
-        arr = random.randint(0, 10, size=N)
-        arr.sort()
+        arr = random.randint(0, 5, size=N)
 
-        print(i, arr, N)
+        print(i)
 
-        alg_naive = get_majority_element_naive(arr, 0, N)
-        alg_fast = get_majority_element_divandconq(arr, 0, N)
+        maj_fast, n_fast = majority_element_fast(arr)
+        maj_div_and_conq, n_div_and_conq = majority_element_div_and_conq(arr, 0, len(arr) - 1)
 
-        if alg_naive != alg_fast:
-            print('Naive algorithm:', alg_naive)
-            print('Fast algorithm:', alg_fast)
+        if maj_fast != maj_div_and_conq:
+            print("Array:", arr)
+            print("Fast algorithm:", maj_fast)
+            print("Divide & conquer algorithm:", maj_div_and_conq)
             flag_correct = False
 
         i += 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # stress_test()
 
     n = int(input())
     arr = list(map(int, input().split()))
-    if get_majority_element_divandconq(arr, 0, n) != -1:
+    if majority_element_div_and_conq(arr, 0, n - 1)[0] != -1:
         print(1)
     else:
         print(0)
