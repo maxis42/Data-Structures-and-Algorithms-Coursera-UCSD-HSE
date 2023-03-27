@@ -54,9 +54,8 @@ def majority_element_div_and_conq(arr, left, right):
 
 
 def stress_test():
-    flag_correct = True
     i = 0
-    while flag_correct:
+    while True:
         N = random.randint(1, 10)
         arr = random.randint(0, 5, size=N)
 
@@ -69,7 +68,7 @@ def stress_test():
             print("Array:", arr)
             print("Fast algorithm:", maj_fast)
             print("Divide & conquer algorithm:", maj_div_and_conq)
-            flag_correct = False
+            break
 
         i += 1
 
