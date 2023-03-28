@@ -1,47 +1,38 @@
 # Uses python3
-import sys
 
 
-def merge_sort_num_of_inv(a):
-    n = len(a)
-    num_of_inversions = 0
+def num_of_inversions(arr):
+    if len(arr) == 1:
+        return arr, 0
 
-    if n == 1:
-        return a, num_of_inversions
-
-    mid = n // 2
-    b, n1 = merge_sort_num_of_inv(a[:mid])
-    num_of_inversions += n1
-
-    c, n2 = merge_sort_num_of_inv(a[mid:])
-    num_of_inversions += n2
-
-    a_new, n3 = merge_num_of_inv(b, c)
-    num_of_inversions += n3
-
-    return a_new, num_of_inversions
+    mid = len(arr) // 2
+    left_sorted, n_inv_left = num_of_inversions(arr[:mid])
+    right_sorted, n_inv_right = num_of_inversions(arr[mid:])
+    arr_sorted, n_inv_merge = num_of_inversions_merge(left_sorted, right_sorted)
+    n_inv = n_inv_left + n_inv_right + n_inv_merge
+    return arr_sorted, n_inv
 
 
-def merge_num_of_inv(b, c):
-    d = list()
-    num_of_inversions = 0
+def num_of_inversions_merge(sorted_arr1, sorted_arr2):
+    sorted_arr = list()
+    n_inv, i, j = 0, 0, 0
 
-    while (len(b) != 0) and (len(c) != 0):
-        if b[0] <= c[0]:
-            d.append(b[0])
-            b = b[1:]
+    while (i < len(sorted_arr1)) and (j < len(sorted_arr2)):
+        if sorted_arr1[i] <= sorted_arr2[j]:
+            sorted_arr.append(sorted_arr1[i])
+            i += 1
         else:
-            d.append(c[0])
-            c = c[1:]
-            num_of_inversions += len(b)
+            sorted_arr.append(sorted_arr2[j])
+            j += 1
+            n_inv += len(sorted_arr1[i:])
 
-    d.extend(b)
-    d.extend(c)
-    return d, num_of_inversions
+    sorted_arr.extend(sorted_arr1[i:])
+    sorted_arr.extend(sorted_arr2[j:])
+    return sorted_arr, n_inv
 
 
 if __name__ == '__main__':
-    input_ = sys.stdin.read()
-    n, *a = list(map(int, input_.split()))
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-    print(merge_sort_num_of_inv(a)[1])
+    print(num_of_inversions(arr)[1])

@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 def merge_sort(a):
@@ -28,7 +27,7 @@ def merge(b, c):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    n, *a = list(map(int, input.split()))
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-    print(merge_sort(a))
+    print(merge_sort(arr))

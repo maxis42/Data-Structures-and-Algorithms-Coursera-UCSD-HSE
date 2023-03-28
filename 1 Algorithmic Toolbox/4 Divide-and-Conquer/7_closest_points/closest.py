@@ -5,7 +5,7 @@ from math import sqrt
 
 def min_dist_sort(x, y):
     points = list(zip(x, y))
-    points = sorted(points, key=lambda x: x[0])
+    points = sorted(points, key=lambda p: p[0])
     return sqrt(minimum_distance(points))
 
 
@@ -59,9 +59,10 @@ def minimum_distance_bruteforce_wo_sqrt(x, y):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    data = list(map(int, input.split()))
-    n = data[0]
-    x = data[1::2]
-    y = data[2::2]
+    n = int(input())
+    x, y = [], []
+    for _ in range(n):
+        x_i, y_i = map(int, input().split())
+        x.append(x_i)
+        y.append(y_i)
     print("{0:.9f}".format(min_dist_sort(x, y)))

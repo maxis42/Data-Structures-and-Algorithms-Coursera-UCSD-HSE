@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 
 
 # complexity n*log(n), where n = p + 2*s
@@ -40,14 +39,18 @@ def naive_count_segments(starts, ends, points):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    data = list(map(int, input.split()))
-    n = data[0]
-    m = data[1]
-    starts = data[2:2 * n + 2:2]
-    ends = data[3:2 * n + 2:2]
-    points = data[2 * n + 2:]
-    # use fast_count_segments
+    n_segments, n_points = map(int, input().split())
+    segments = []
+    for _ in range(n_segments):
+        segment = tuple(map(int, input().split()))
+        segments.append(segment)
+    points = list(map(int, input().split()))
+
+    starts, ends = [], []
+    for start, end in segments:
+        starts.append(start)
+        ends.append(end)
+
     cnt = fast_count_segments(starts, ends, points)
     for x in cnt:
         print(x, end=' ')
