@@ -1,11 +1,10 @@
 # Uses python3
-import sys
 
 
 def greedy_optimal_sequence(n):
-    '''
+    """
     Actually not optimal
-    '''
+    """
     sequence = []
     while n >= 1:
         sequence.append(n)
@@ -19,12 +18,12 @@ def greedy_optimal_sequence(n):
 
 
 def optimal_sequence(n):
-    '''
+    """
     Possible operation types:
     1 - multiply by 2
     2 - multiply by 3
     3 - add 1
-    '''
+    """
 
     # n elements as we calculate number of operations starting from 1
     # elements [1, n]
@@ -58,7 +57,7 @@ def optimal_sequence(n):
             num_operations = min_num_operations[i] + 1
             i_new = n_new - 1
 
-            # check if number of operations is less then the previous number
+            # check if number of operations is less than the previous number
             if n_new <= n and num_operations < min_num_operations[i_new]:
                 min_num_operations[i_new] = num_operations
                 ops[i_new] = op_type
@@ -69,9 +68,9 @@ def optimal_sequence(n):
 
 
 def get_sequence(n, ops):
-    '''
+    """
     Get number n from 1 in reversed order (from n to 1)
-    '''
+    """
     n_seq = n
     seq = [n]
     while n_seq != 1:
@@ -146,13 +145,10 @@ def get_optimal_operations(value):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    n = int(input)
-    # n = 96234
+    n = int(input())
     sequence = list(optimal_sequence(n))
     print(len(sequence) - 1)
     for x in sequence:
         print(x, end=' ')
-    # print()
 
     # get_optimal_operations(n)

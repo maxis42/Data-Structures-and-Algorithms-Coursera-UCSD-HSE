@@ -1,7 +1,5 @@
 # Uses python3
 
-import sys
-
 
 def distance_matrix(A, B):
     n = len(A)
@@ -37,10 +35,6 @@ def distance_matrix(A, B):
                 else:
                     D[i][j] = deletion
                     directions[i-1][j-1] = 'DEL'
-
-    for row in directions:
-        print(row)
-
     return directions
 
 
@@ -66,16 +60,9 @@ def output_alignment(directions):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    data = list(map(int, input.split()))
-
-    n = data[0]
-    data = data[1:]
-    a = data[:n]
-
-    data = data[n:]
-    m = data[0]
-    data = data[1:]
-    b = data[:m]
+    n = int(input())
+    a = list(map(int, input().split()))
+    m = int(input())
+    b = list(map(int, input().split()))
 
     print(lcs2(a, b))
