@@ -1,5 +1,4 @@
 # Uses python3
-import sys
 from typing import List
 
 import numpy as np
@@ -56,14 +55,6 @@ def optimal_weight(capacity: int, weights: List[int]) -> int:
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    W, n, *w = list(map(int, input.split()))
-
-    # W = 10
-    # n = 3
-    # w = [1, 4, 8]
-    # print(f"W: {W}")
-    # print(f"n: {n}")
-    # print(f"w: {w}")
-    # print(f"Result: {optimal_weight(W, w)}")
+    W, n = map(int, input().split())
+    w = list(map(int, input().split()))
     print(optimal_weight(W, w))

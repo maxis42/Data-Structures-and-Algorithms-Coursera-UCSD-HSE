@@ -1,4 +1,3 @@
-import sys
 import itertools
 from typing import List
 
@@ -31,7 +30,7 @@ def optimal_weight_matrix(capacity: int, weights: List[int]) -> np.array:
     """
     n = len(weights)
 
-    value = np.zeros((n + 1, capacity + 1), dtype=np.int)
+    value = np.zeros((n + 1, capacity + 1), dtype=int)
 
     for i in range(1, n + 1):
         elem = weights[i - 1]
@@ -99,6 +98,8 @@ def is_partition3(weights):
     if len(weights) == 0:
         return True
 
+    if capacity3 % 3 != 0:
+        return False
     capacity = capacity3 // 3
 
     for _ in range(3):
@@ -112,6 +113,9 @@ def is_partition3(weights):
 
 
 if __name__ == '__main__':
-    input = sys.stdin.read()
-    n, *A = list(map(int, input.split()))
-    print(is_partition3(A))
+    n = int(input())
+    A = list(map(int, input().split()))
+    if is_partition3(A):
+        print(1)
+    else:
+        print(0)

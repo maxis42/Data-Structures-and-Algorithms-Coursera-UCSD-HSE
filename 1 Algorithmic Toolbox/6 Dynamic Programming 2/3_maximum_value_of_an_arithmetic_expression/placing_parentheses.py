@@ -1,7 +1,5 @@
 # Uses python3
-import sys
 from typing import List
-
 import numpy as np
 
 
@@ -28,7 +26,6 @@ def get_min_max(
 
     # iterate by the last possible operation
     for k in range(i, j):
-        #         print(f"MinMax i={i}, j={j}, k={k}")
         a = evalt(max_vals[i, k], max_vals[k + 1, j], operations[k])
         b = evalt(max_vals[i, k], min_vals[k + 1, j], operations[k])
         c = evalt(min_vals[i, k], max_vals[k + 1, j], operations[k])
