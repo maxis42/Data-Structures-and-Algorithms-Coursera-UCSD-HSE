@@ -30,7 +30,7 @@ def optimal_weight_matrix(capacity: int, weights: List[int]) -> np.array:
     """
     n = len(weights)
 
-    value = np.zeros((n + 1, capacity + 1), dtype=int)
+    value = np.zeros((n + 1, capacity + 1), dtype=np.int)
 
     for i in range(1, n + 1):
         elem = weights[i - 1]
