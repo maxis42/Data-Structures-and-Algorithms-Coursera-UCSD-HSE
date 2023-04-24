@@ -15,11 +15,9 @@ ___
 
 ### [2 Data Structures](/2%20Data%20Structures)
 * [1 Basic Data Structures](/2%20Data%20Structures/1%20Basic%20Data%20Structures)
-* [2 Dynamic Arrays and Amortized Analysis](/2%20Data%20Structures/2%20Dynamic%20Arrays%20and%20Amortized%20Analysis)
-* [3 Priority Queues and Disjoint Sets](/2%20Data%20Structures/3%20Priority%20Queues%20and%20Disjoint%20Sets)
-* [4 Hash Tables](/2%20Data%20Structures/4%20Hash%20Tables)
-* [5 Binary Search Trees 1](/2%20Data%20Structures/5%20Binary%20Search%20Trees%201)
-* [6 Binary Search Trees 2](/2%20Data%20Structures/6%20Binary%20Search%20Trees%202)
+* [2 Priority Queues and Disjoint Sets](/2%20Data%20Structures/2%20Priority%20Queues%20and%20Disjoint%20Sets)
+* [3 Hash Tables](/2%20Data%20Structures/3%20Hash%20Tables)
+* [4 Binary Search Trees](/2%20Data%20Structures/4%20Binary%20Search%20Trees)
 
 
 ### [3 Algorithms on Graph](/3%20Algorithms%20on%20Graph)
