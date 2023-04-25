@@ -19,7 +19,6 @@ ___
 * [3 Hash Tables](/2%20Data%20Structures/3%20Hash%20Tables)
 * [4 Binary Search Trees](/2%20Data%20Structures/4%20Binary%20Search%20Trees)
 
-
 ### [3 Algorithms on Graph](/3%20Algorithms%20on%20Graph)
 * [Homeworks](/3%20Algorithms%20on%20Graph/Homeworks)
 * [Lectures](/3%20Algorithms%20on%20Graph/Lectures)
