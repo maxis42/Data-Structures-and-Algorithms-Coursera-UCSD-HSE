@@ -25,18 +25,6 @@ class Solver:
 			) % prime
 		return hashes
 
-	def _precompute_substring_hashes(self, hash_type, len_, prime):
-		hashes_ss = []
-
-		if hash_type == "t":
-			len_i = len(self.hashes_t)
-		else:
-			len_i = len(self.hashes_p)
-
-		for i in range(len_i - len_):
-			hashes_ss.append(self._calc_substring_hash(hash_type, prime, i, len_))
-		return hashes_ss
-
 	@staticmethod
 	def _modular_exponentitation(a, b, n):
 		"""
