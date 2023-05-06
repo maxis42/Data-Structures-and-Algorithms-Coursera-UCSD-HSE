@@ -25,10 +25,10 @@ ___
 * [4 Advanced Shortest Paths](/3%20Algorithms%20on%20Graph/4%20Advanced%20Shortest%20Paths)
 
 ### [4 Algorithms on Strings](/4%20Algorithms%20on%20Strings)
-* [1 Suffix Trees](/3%20Algorithms%20on%20Strings/1%20Suffix%20Trees)
-* [2 Burrows-Wheeler Transform and Suffix Arrays](/3%20Algorithms%20on%20Strings/2%20Burrows-Wheeler%20Transform%20and%20Suffix%20Arrays)
-* [3 Knuth-Morris-Pratt Algorithm](/3%20Algorithms%20on%20Strings/3%20Knuth-Morris-Pratt%20Algorithm)
-* [4 Constructing Suffix Arrays and Suffix Trees](/3%20Algorithms%20on%20Strings/4%20Constructing%20Suffix%20Arrays%20and%20Suffix%20Trees)
+* [1 Suffix Trees](/4%20Algorithms%20on%20Strings/1%20Suffix%20Trees)
+* [2 Burrows-Wheeler Transform and Suffix Arrays](/4%20Algorithms%20on%20Strings/2%20Burrows-Wheeler%20Transform%20and%20Suffix%20Arrays)
+* [3 Knuth-Morris-Pratt Algorithm](/4%20Algorithms%20on%20Strings/3%20Knuth-Morris-Pratt%20Algorithm)
+* [4 Constructing Suffix Arrays and Suffix Trees](/4%20Algorithms%20on%20Strings/4%20Constructing%20Suffix%20Arrays%20and%20Suffix%20Trees)
 
 ### [5 Advanced Algorithms and Complexity](/5%20Advanced%20Algorithms%20and%20Complexity)
 * [Homeworks](/5%20Advanced%20Algorithms%20and%20Complexity/Homeworks)
