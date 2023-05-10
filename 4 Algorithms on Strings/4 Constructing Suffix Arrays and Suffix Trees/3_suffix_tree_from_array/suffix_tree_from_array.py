@@ -17,7 +17,7 @@ class SuffixTreeNode:
 class SuffixTree:
     """
     Build suffix tree of the string text given its
-    suffix array suffix_array and LCP array lcp_array.
+    suffix array and  longest common prefix (LCP) array.
 
     Return the tree as a mapping from a node ID to
     the list of all outgoing edges of the corresponding

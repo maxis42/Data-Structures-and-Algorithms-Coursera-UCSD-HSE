@@ -10,7 +10,7 @@ class BWMatching:
     @staticmethod
     def _preprocess(bwt):
         """
-        Preprocess the Burrows-Wheeler Transform bwt of some text
+        Preprocess the Burrows-Wheeler Transform (BWT) of some text
         and compute as a result:
           * starts - for each character C in bwt, starts[C] is the first position
               of this character in the sorted array of

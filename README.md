@@ -31,8 +31,11 @@ ___
 * [4 Constructing Suffix Arrays and Suffix Trees](/4%20Algorithms%20on%20Strings/4%20Constructing%20Suffix%20Arrays%20and%20Suffix%20Trees)
 
 ### [5 Advanced Algorithms and Complexity](/5%20Advanced%20Algorithms%20and%20Complexity)
-* [Homeworks](/5%20Advanced%20Algorithms%20and%20Complexity/Homeworks)
-* [Lectures](/5%20Advanced%20Algorithms%20and%20Complexity/Lectures)
+* [1 Flow in Networks](/5%20Advanced%20Algorithms%20and%20Complexity/1%20Flow%20in%20Networks)
+* [2 Linear Programming](/5%20Advanced%20Algorithms%20and%20Complexity/2%20Linear%20Programming)
+* [3 NP-complete Problems](/5%20Advanced%20Algorithms%20and%20Complexity/3%20NP-complete%20Problems)
+* [4 Coping with NP-completeness](/5%20Advanced%20Algorithms%20and%20Complexity/4%20Coping%20with%20NP-completeness)
+* [5 Streaming Algorithms](/5%20Advanced%20Algorithms%20and%20Complexity/5%20Streaming%20Algorithms)
 
 ### [6 Genome Assembly](/6%20Genome%20Assembly)
 * [Homeworks](/6%20Genome%20Assembly/Homeworks)

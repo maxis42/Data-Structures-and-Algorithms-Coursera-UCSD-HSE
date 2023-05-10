@@ -4,69 +4,45 @@ from collections import deque
 
 
 class TrieNode:
-    def __init__(self, parent, value, node_id):
-        self.parent = parent
-        self.value = value
-        self.node_id = node_id
-
+    def __init__(self, is_terminal=False):
         self.children = dict()
+        self.is_terminal = is_terminal
 
-    def add_child(self, value, node_id):
-        self.children[value] = TrieNode(self, value, node_id)
+    def add_child(self, value, is_terminal=False):
+        if value not in self.children:
+            self.children[value] = TrieNode(is_terminal)
+        elif is_terminal:
+            self.children[value].is_terminal = True
 
 
 class Trie:
     def __init__(self, patterns):
         self.patterns = patterns
 
-        self.tree = TrieNode(None, None, 0)
+        self.tree = TrieNode()
         self._construct_trie(self.patterns)
 
     def _construct_trie(self, patterns):
-        node_id = 1
-
         for pattern in patterns:
             cur = self.tree
             for c in pattern:
-                if c not in cur.children:
-                    cur.add_child(c, node_id)
-                    node_id += 1
-
+                cur.add_child(c)
                 cur = cur.children[c]
-
-            cur.add_child("$", None)
-
-    def print_adj_list(self):
-        q = deque([self.tree])
-
-        while q:
-            cur = q.popleft()
-
-            if cur.value is not None:
-                print("{}->{}:{}".format(cur.parent.node_id, cur.node_id, cur.value))
-
-            for node in cur.children.values():
-                q.append(node)
+            cur.is_terminal = True
 
     def find_occurrences(self, text):
-        pos = 0
         found_positions = []
-
-        while pos < len(text):
-            node = self.tree
+        for pos in range(len(text)):
+            v = self.tree
 
             for c in text[pos:]:
-                if c in node.children:
-                    node = node.children[c]
-
-                    if "$" in node.children:
+                if c in v.children:
+                    v = v.children[c]
+                    if v.is_terminal:
                         found_positions.append(pos)
                         break
                 else:
                     break
-
-            pos += 1
-
         return found_positions
 
 
