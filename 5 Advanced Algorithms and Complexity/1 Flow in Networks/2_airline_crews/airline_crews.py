@@ -85,6 +85,9 @@ class FlowGraph:
         for i in range(len(graph_r.edges) // 2):
             graph_r.edges[i * 2].flow = graph_r.edges[i * 2].capacity
 
+        # edge.flow assumed to represent its capacity
+        # (incorrect attributes naming)
+
         flow = 0
         while True:
             # find the shortest path in residuals graph
@@ -92,8 +95,7 @@ class FlowGraph:
             if not path:
                 break
 
-            # find min flow thro
-            # ugh the path
+            # find min flow through the path
             min_flow = path[0][1].flow
             for _, edge in path[1:]:
                 min_flow = min(min_flow, edge.flow)
