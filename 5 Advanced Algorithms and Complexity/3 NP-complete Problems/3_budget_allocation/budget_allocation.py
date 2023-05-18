@@ -3,7 +3,7 @@ from itertools import starmap
 from operator import mul
 
 
-class IntergerLinearProgrammingToSAT:
+class IntegerLinearProgrammingToSAT:
     """
     It is guaranteed that there will be AT MOST 3
     different variables with non-zero coefficients
@@ -91,7 +91,7 @@ def run_test():
         (-1, -1, -1),
     ]
     b = [6, -2]
-    ilp_to_sat = IntergerLinearProgrammingToSAT(A, b)
+    ilp_to_sat = IntegerLinearProgrammingToSAT(A, b)
     sat = ilp_to_sat.convert()
     print(len(sat), num_variables)
     for clause in sat:
@@ -108,7 +108,7 @@ def run_algo():
         A += [list(map(int, input().split()))]
     b = list(map(int, input().split()))  # num_inequalities
 
-    ilp_to_sat = IntergerLinearProgrammingToSAT(A, b)
+    ilp_to_sat = IntegerLinearProgrammingToSAT(A, b)
     sat = ilp_to_sat.convert()
 
     print(len(sat), num_variables)
